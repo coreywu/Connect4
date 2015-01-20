@@ -1,5 +1,8 @@
 #include <stdio.h>
 
+#define HUMAN 1
+#define AI 0
+
 typedef int bool;
 enum { false, true };
 
@@ -9,16 +12,100 @@ typedef struct {
     Turn turn;
     char board [6][7];
 } GameState;
+
+typedef struct {
+    int x;
+    int y;
+} Position;
+
+Position getHumanMove();
+Position getAIMove();
+char getSymbol();
+void printBoard();
+char checkWinner();
+
+int player1 = HUMAN;
+int player2 = HUMAN;
+
+GameState gameState;
+
+void playGame() {
+    int i, j;
+
+    char emptyBoard [6][7];
+    GameState gameState = {1, *emptyBoard};
+
+    for (i = 0; i < 6; i++) {
+        for (j = 0; j < 7; j++) {
+            gameState.board[i][j] = ' ';
+        }
+    }
+    printBoard(gameState);
+
+    Position position;
+    while(true) {
+        position = getHumanMove();
+        printf("Move: (%c, %c) \n", position.x, position.y);
+    }
+}
     
-void printBoard(GameState gameState) {
+Position getMove(int playerNum) {
+    Position position;
+    char playerSymbol = getSymbol(gameState.turn);
+    if (playerNum == 1) {
+        if (player1 == HUMAN) {
+            position = getHumanMove();
+        } else {
+            position = getAIMove();
+        }
+    } else {
+        if (player2 == HUMAN) {
+            position = getHumanMove();
+        } else {
+            position = getAIMove();
+        }
+    }
+    return position;
+}
+
+Position getHumanMove() {
+    bool valid = false;
+    char input[2] = {0, 0};
+    while (!valid) {
+        printf("Enter input: ");
+        scanf("%s", &input);
+        // Convert to int
+        input[0] = input[0] - '0';
+        input[1] = input[1] - '0';
+        if (input[0] > 0 && input[0] < 8 && input[1] > 0 && input[1] < 7) {
+            valid = true;
+        }
+    }
+    Position position = {input[0], input[1]};
+    return position;
+}
+
+Position getAIMove() {
+    // TODO
+    Position position = {0, 0};
+    return position;
+}
+
+
+char getSymbol(Turn turn) {
+    char symbol = 0;
+    if (turn) {
+        symbol = 'X';
+    } else {
+        symbol = 'O';
+    }
+    return symbol;
+}
+
+void printBoard() {
     int i, j;
     printf("Begin printBoard \n");
-    char playerSymbol = 0;
-    if (gameState.turn) {
-        playerSymbol = 'X';
-    } else {
-        playerSymbol = 'O';
-    }
+    char playerSymbol = getSymbol(gameState.turn);
         
     printf("\n");
     printf("Player %c's Turn: \n", playerSymbol);
@@ -71,13 +158,13 @@ char checkWinner(char board[6][7]) {
                     return board[i][j];
                 }
             }
-            // Check diagnol - up-right
+            // Check diagonal - up-right
             if (i >= 3 && j <= 3) {
                 if (board[i][j] == board[i-1][j+1] && board[i][j] == board[i-2][j+2] && board[i][j] == board[i-3][j+3] && board[i][j] != ' ') {
                     return board[i][j];
                 }
             }
-            // Check diagnol - up-left
+            // Check diagonal - up-left
             if (i >= 3 && j >= 3) {
                 if (board[i][j] == board[i-1][j-1] && board[i][j] == board[i-2][j-2] && board[i][j] == board[i-3][j-3] && board[i][j] != ' ') {
                     return board[i][j];
@@ -90,20 +177,10 @@ char checkWinner(char board[6][7]) {
 }
 
 int main(void) {
-    printf("Begin main \n");
-    int i, j;
 
-    char emptyBoard [6][7];
-    GameState gameState = {1, *emptyBoard};
+    playGame();
 
-    for (i = 0; i < 6; i++) {
-        for (j = 0; j < 7; j++) {
-            gameState.board[i][j] = ' ';
-        }
-    }
-    printBoard(gameState);
-    printf("Winner: %c \n", checkWinner(gameState.board));
-
+    /*
     // Testing
     char verticalBoard [6][7];
     for (i = 0; i < 6; i++) {
@@ -152,6 +229,7 @@ int main(void) {
     diagonalBoard2[2][2] = 'O';
     diagonalBoard2[3][3] = 'O';
     printf("Winner: %c \n", checkWinner(diagonalBoard2));
+    **/
 
     return 0;
 }
