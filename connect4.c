@@ -11,14 +11,13 @@ typedef int Turn;
 typedef struct {
     Turn turn;
     char board [6][7];
+    int columnHeight [7];
 } GameState;
 
 typedef struct {
     char symbol;
-    int x;
-    int y;
+    int column;
 } Move;
-
 
 Move getMove();
 Move getHumanMove();
@@ -35,8 +34,10 @@ GameState gameState;
 
 void playGame() {
     int i, j;
+    char winner;
+    bool end = false;
 
-    gameState = (GameState){0};
+    gameState = (GameState){.turn = 0, .board = 0, .columnHeight = {5, 5, 5, 5, 5, 5, 5}};
 
     for (i = 0; i < 6; i++) {
         for (j = 0; j < 7; j++) {
@@ -46,11 +47,20 @@ void playGame() {
     printBoard(gameState);
 
     Move move;
-    while(true) {
+    while(!end) {
         move = getMove();
         performMove(move);
         printBoard(gameState);
-        printf("Move: %c -> (%i, %i) \n", move.symbol, move.x, move.y);
+        printf("Move: %c -> %i \n", move.symbol, move.column);
+        winner = checkWinner();
+        if (winner != '?') {
+            end = true;
+            if (winner != '-') {
+                printf("\n Winner: %c \n", winner); 
+            } else {
+                printf("\n Draw.");
+            }
+        }
         gameState.turn = !gameState.turn;
     }
 }
@@ -77,29 +87,27 @@ Move getMove(int playerNum) {
 
 Move getHumanMove() {
     bool valid = false;
-    char input[2] = {0, 0};
+    int input = 0;
     while (!valid) {
         printf("Enter input: ");
-        scanf("%s", &input);
-        // Convert to int
-        input[0] = input[0] - '0';
-        input[1] = input[1] - '0';
-        if (input[0] > 0 && input[0] < 8 && input[1] > 0 && input[1] < 7) {
+        scanf("%d", &input);
+        if (input > 0 && input <= 7 && gameState.columnHeight[input - 1] >= 0) { 
             valid = true;
         }
     }
-    Move move = {0, input[0], input[1]};
+    Move move = {0, input - 1};
     return move;
 }
 
 Move getAIMove() {
     // TODO
-    Move move = {0, 0, 0};
+    Move move = {0, 0};
     return move;
 }
 
 void performMove(Move move) {
-    gameState.board[move.x][move.y] = move.symbol;
+    gameState.board[gameState.columnHeight[move.column]][move.column] = move.symbol;
+    gameState.columnHeight[move.column] = gameState.columnHeight[move.column] - 1; 
 }
 
 char getSymbol(Turn turn) {
@@ -119,6 +127,7 @@ void printBoard() {
         
     printf("\n");
     printf("Player %c's Turn: \n", playerSymbol);
+    printf(" 1   2   3   4   5   6   7 \n");
 
     for (i = 0; i < 6; i++) {
         for (j = 0; j < 7; j++) {
@@ -127,6 +136,27 @@ void printBoard() {
             }
             printf(" ");
             printf("%c", gameState.board[i][j]);
+        }
+        printf("\n");
+        printf("--------------------------- \n");
+    }
+}
+
+void printBoard2(char board[6][7]) {
+    int i, j;
+    printf("Begin printBoard \n");
+    char playerSymbol = getSymbol(gameState.turn);
+    printf("\n");
+    printf("Player %c's Turn: \n", playerSymbol);
+    printf(" 1   2   3   4   5   6   7 \n");
+
+    for (i = 0; i < 6; i++) {
+        for (j = 0; j < 7; j++) {
+            if (j != 0) {
+                printf(" |");
+            }
+            printf(" ");
+            printf("%c", board[i][j]);
         }
         printf("\n");
         printf("--------------------------- \n");
@@ -187,6 +217,7 @@ char checkWinner(char board[6][7]) {
 }
 
 int main(void) {
+    int i, j;
 
     playGame();
 
@@ -215,6 +246,19 @@ int main(void) {
     horizontalBoard[0][5] = 'O';
     horizontalBoard[0][6] = 'O';
     printf("Winner: %c \n", checkWinner(horizontalBoard));
+
+    char horizontalBoard2 [6][7];
+    for (i = 0; i < 6; i++) {
+        for (j = 0; j < 7; j++) {
+            horizontalBoard[i][j] = ' ';
+        }
+    }
+    horizontalBoard2[5][1] = 'O';
+    horizontalBoard2[5][2] = 'O';
+    horizontalBoard2[5][3] = 'O';
+    horizontalBoard2[5][4] = 'O';
+    printBoard2(horizontalBoard2);
+    printf("Winner: %c \n", checkWinner(horizontalBoard2));
 
     char diagonalBoard [6][7];
     for (i = 0; i < 6; i++) {
