@@ -14,12 +14,16 @@ typedef struct {
 } GameState;
 
 typedef struct {
+    char symbol;
     int x;
     int y;
-} Position;
+} Move;
 
-Position getHumanMove();
-Position getAIMove();
+
+Move getMove();
+Move getHumanMove();
+Move getAIMove();
+void performMove();
 char getSymbol();
 void printBoard();
 char checkWinner();
@@ -32,8 +36,7 @@ GameState gameState;
 void playGame() {
     int i, j;
 
-    char emptyBoard [6][7];
-    GameState gameState = {1, *emptyBoard};
+    gameState = (GameState){0};
 
     for (i = 0; i < 6; i++) {
         for (j = 0; j < 7; j++) {
@@ -42,33 +45,37 @@ void playGame() {
     }
     printBoard(gameState);
 
-    Position position;
+    Move move;
     while(true) {
-        position = getHumanMove();
-        printf("Move: (%c, %c) \n", position.x, position.y);
+        move = getMove();
+        performMove(move);
+        printBoard(gameState);
+        printf("Move: %c -> (%i, %i) \n", move.symbol, move.x, move.y);
+        gameState.turn = !gameState.turn;
     }
 }
     
-Position getMove(int playerNum) {
-    Position position;
+Move getMove(int playerNum) {
+    Move move;
     char playerSymbol = getSymbol(gameState.turn);
     if (playerNum == 1) {
         if (player1 == HUMAN) {
-            position = getHumanMove();
+            move = getHumanMove();
         } else {
-            position = getAIMove();
+            move = getAIMove();
         }
     } else {
         if (player2 == HUMAN) {
-            position = getHumanMove();
+            move = getHumanMove();
         } else {
-            position = getAIMove();
+            move = getAIMove();
         }
     }
-    return position;
+    move.symbol = playerSymbol;
+    return move;
 }
 
-Position getHumanMove() {
+Move getHumanMove() {
     bool valid = false;
     char input[2] = {0, 0};
     while (!valid) {
@@ -81,16 +88,19 @@ Position getHumanMove() {
             valid = true;
         }
     }
-    Position position = {input[0], input[1]};
-    return position;
+    Move move = {0, input[0], input[1]};
+    return move;
 }
 
-Position getAIMove() {
+Move getAIMove() {
     // TODO
-    Position position = {0, 0};
-    return position;
+    Move move = {0, 0, 0};
+    return move;
 }
 
+void performMove(Move move) {
+    gameState.board[move.x][move.y] = move.symbol;
+}
 
 char getSymbol(Turn turn) {
     char symbol = 0;
