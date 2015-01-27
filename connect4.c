@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <limits.h>
+#include <string.h>
 
 #define HUMAN 1
 #define AI 0
@@ -19,13 +21,24 @@ typedef struct {
     int column;
 } Move;
 
+typedef struct {
+    int value;
+    Move move;
+} AIMove;
+
 Move getMove();
 Move getHumanMove();
 Move getAIMove();
 void performMove();
+
 char getSymbol();
 void printBoard();
 char checkWinner();
+
+GameState* getSuccessors(char[6][7]);
+AIMove value(Turn, char[6][7]);
+AIMove maxValue(char[6][7]);
+AIMove minValue(char[6][7]);
 
 int player1 = HUMAN;
 int player2 = HUMAN;
@@ -101,9 +114,70 @@ Move getHumanMove() {
 
 Move getAIMove() {
     // TODO
+
     Move move = {0, 0};
     return move;
 }
+
+GameState* getSuccessors(char board[6][7]) {
+    return 0;
+}
+
+/**
+ * Minimax algorithm implementation of AI.
+ * AI's symbol is 'O' and turn is 1.
+ **/
+AIMove value(Turn turn, char board[6][7]) {
+    if (checkWinner(board) == 'O') {
+        AIMove aiMove = {0, 1};
+        return aiMove;
+    } else if (checkWinner(board) == 'X') {
+        AIMove aiMove = {0, -1};
+        return aiMove;
+    } else if (checkWinner(board) == '-') {
+        AIMove aiMove = {0, 0};
+        return aiMove;
+    } else {
+        if (turn) {
+            return maxValue(board);
+        } else {
+            return minValue(board);
+        }
+    }
+}
+
+AIMove maxValue(char board[6][7]) {
+    int i;
+    AIMove successorMove;
+    AIMove aiMove = {INT_MIN, 0};
+    GameState successors[7];
+    memcpy(getSuccessors(board), successors, sizeof(GameState));
+    //successors = getSuccessors(board);
+    for (i = 0; i < 7; i++) {
+        successorMove = value(0, successors[i].board);
+        if (successorMove.value > aiMove.value) {
+            aiMove = successorMove;
+        }
+    }
+    return aiMove;
+}
+
+AIMove minValue(char board[6][7]) {
+    int i;
+    AIMove successorMove;
+    AIMove aiMove = {INT_MAX, 0};
+    GameState successors[7];
+    memcpy(getSuccessors(board), successors, sizeof(GameState));
+    //successors = getSuccessors(board);
+    for (i = 0; i < 7; i++) {
+        successorMove = value(1, successors[i].board);
+        if (successorMove.value < aiMove.value) {
+            aiMove = successorMove;
+        }
+    }
+    return aiMove;
+}
+
 
 void performMove(Move move) {
     gameState.board[gameState.columnHeight[move.column]][move.column] = move.symbol;
