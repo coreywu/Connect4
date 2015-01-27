@@ -52,7 +52,7 @@ void playGame() {
         performMove(move);
         printBoard(gameState);
         printf("Move: %c -> %i \n", move.symbol, move.column);
-        winner = checkWinner();
+        winner = checkWinner(gameState.board);
         if (winner != '?') {
             end = true;
             if (winner != '-') {
@@ -113,9 +113,9 @@ void performMove(Move move) {
 char getSymbol(Turn turn) {
     char symbol = 0;
     if (turn) {
-        symbol = 'X';
-    } else {
         symbol = 'O';
+    } else {
+        symbol = 'X';
     }
     return symbol;
 }
@@ -283,6 +283,62 @@ int main(void) {
     diagonalBoard2[2][2] = 'O';
     diagonalBoard2[3][3] = 'O';
     printf("Winner: %c \n", checkWinner(diagonalBoard2));
+
+    char drawBoard [6][7];
+    for (i = 0; i < 6; i++) {
+        for (j = 0; j < 7; j++) {
+            drawBoard[i][j] = ' ';
+        }
+    }
+    drawBoard[0][0] = 'O';
+    drawBoard[0][1] = 'O';
+    drawBoard[0][2] = 'O';
+    drawBoard[0][3] = 'X';
+    drawBoard[0][4] = 'O';
+    drawBoard[0][5] = 'O';
+    drawBoard[0][6] = 'O';
+
+    drawBoard[1][0] = 'X';
+    drawBoard[1][1] = 'X';
+    drawBoard[1][2] = 'X';
+    drawBoard[1][3] = 'O';
+    drawBoard[1][4] = 'X';
+    drawBoard[1][5] = 'X';
+    drawBoard[1][6] = 'X';
+
+    drawBoard[2][0] = 'O';
+    drawBoard[2][1] = 'O';
+    drawBoard[2][2] = 'X';
+    drawBoard[2][3] = 'X';
+    drawBoard[2][4] = 'X';
+    drawBoard[2][5] = 'O';
+    drawBoard[2][6] = 'X';
+
+    drawBoard[3][0] = 'X';
+    drawBoard[3][1] = 'X';
+    drawBoard[3][2] = 'O';
+    drawBoard[3][3] = 'O';
+    drawBoard[3][4] = 'X';
+    drawBoard[3][5] = 'X';
+    drawBoard[3][6] = 'O';
+
+    drawBoard[4][0] = 'O';
+    drawBoard[4][1] = 'O';
+    drawBoard[4][2] = 'X';
+    drawBoard[4][3] = 'X';
+    drawBoard[4][4] = 'O';
+    drawBoard[4][5] = 'O';
+    drawBoard[4][6] = 'X';
+
+    drawBoard[5][0] = 'O';
+    drawBoard[5][1] = 'O';
+    drawBoard[5][2] = 'X';
+    drawBoard[5][3] = 'X';
+    drawBoard[5][4] = 'O';
+    drawBoard[5][5] = 'X';
+    drawBoard[5][6] = 'O';
+    printBoard2(drawBoard);
+    printf("Winner: %c \n", checkWinner(drawBoard));
     **/
 
     return 0;
