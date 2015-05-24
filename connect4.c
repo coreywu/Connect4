@@ -293,9 +293,8 @@ char checkWinner(char board[6][7]) {
 int main(void) {
     int i, j;
 
-    playGame();
+    //playGame();
 
-    /*
     // Testing
     char verticalBoard [6][7];
     for (i = 0; i < 6; i++) {
@@ -307,7 +306,9 @@ int main(void) {
     verticalBoard[3][6] = 'X';
     verticalBoard[4][6] = 'X';
     verticalBoard[5][6] = 'X';
+    printf("TestVerticalWinner - expected: X \n");
     printf("Winner: %c \n", checkWinner(verticalBoard));
+    printf("\n");
 
     char horizontalBoard [6][7];
     for (i = 0; i < 6; i++) {
@@ -319,23 +320,26 @@ int main(void) {
     horizontalBoard[0][4] = 'O';
     horizontalBoard[0][5] = 'O';
     horizontalBoard[0][6] = 'O';
+    printf("TestHorizontalWinner1 - expected: O \n");
     printf("Winner: %c \n", checkWinner(horizontalBoard));
+    printf("\n");
 
     char horizontalBoard2 [6][7];
     for (i = 0; i < 6; i++) {
         for (j = 0; j < 7; j++) {
-            horizontalBoard[i][j] = ' ';
+            horizontalBoard2[i][j] = ' ';
         }
     }
     horizontalBoard2[5][1] = 'O';
     horizontalBoard2[5][2] = 'O';
     horizontalBoard2[5][3] = 'O';
     horizontalBoard2[5][4] = 'O';
-    printBoard2(horizontalBoard2);
+    printf("TestHorizontalWinner2 - expected: O \n");
     printf("Winner: %c \n", checkWinner(horizontalBoard2));
+    printf("\n");
 
     char diagonalBoard [6][7];
-    for (i = 0; i < 6; i++) {
+     for (i = 0; i < 6; i++) {
         for (j = 0; j < 7; j++) {
             diagonalBoard[i][j] = ' ';
         }
@@ -344,7 +348,9 @@ int main(void) {
     diagonalBoard[2][4] = 'X';
     diagonalBoard[1][5] = 'X';
     diagonalBoard[0][6] = 'X';
+    printf("TestDiagonalWinner1 - expected: X \n");
     printf("Winner: %c \n", checkWinner(diagonalBoard));
+    printf("\n");
 
     char diagonalBoard2 [6][7];
     for (i = 0; i < 6; i++) {
@@ -356,7 +362,9 @@ int main(void) {
     diagonalBoard2[1][1] = 'O';
     diagonalBoard2[2][2] = 'O';
     diagonalBoard2[3][3] = 'O';
+    printf("TestDiagonalWinner2 - expected: O \n");
     printf("Winner: %c \n", checkWinner(diagonalBoard2));
+    printf("\n");
 
     char drawBoard [6][7];
     for (i = 0; i < 6; i++) {
@@ -412,8 +420,9 @@ int main(void) {
     drawBoard[5][5] = 'X';
     drawBoard[5][6] = 'O';
     printBoard2(drawBoard);
+    printf("TestDraw - expected: - \n");
     printf("Winner: %c \n", checkWinner(drawBoard));
-    **/
+    printf("\n");
 
     return 0;
 }
