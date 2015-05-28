@@ -35,7 +35,7 @@ char getSymbol();
 void printBoard();
 char checkWinner();
 
-GameState* getSuccessors(char[6][7]);
+GameState* getSuccessors(GameState);
 AIMove value(Turn, char[6][7]);
 AIMove maxValue(char[6][7]);
 AIMove minValue(char[6][7]);
@@ -119,8 +119,20 @@ Move getAIMove() {
     return move;
 }
 
-GameState* getSuccessors(char board[6][7]) {
-    return 0;
+GameState* getSuccessors(GameState newGameState) {
+    int i;
+    GameState successors[7];
+    for (i = 0; i < 7; i++) {
+        if (newGameState.board[0][i] != " ") {
+	    successors[i] = ((void *)0);
+	} else {
+	    successors[i] = newGameState;
+	    successors[i].turn = !successors[i].turn;
+	    Move move = {getSymbol(successors[i].turn), i};
+	    performMoveOn(successors[i], move);
+	}
+    }
+    return successors;
 }
 
 /**
@@ -182,6 +194,11 @@ AIMove minValue(char board[6][7]) {
 void performMove(Move move) {
     gameState.board[gameState.columnHeight[move.column]][move.column] = move.symbol;
     gameState.columnHeight[move.column] = gameState.columnHeight[move.column] - 1; 
+}
+
+void performMoveOn(GameState newGameState, Move move) {
+    newGameState.board[gameState.columnHeight[move.column]][move.column] = move.symbol;
+    newGameState.columnHeight[move.column] = gameState.columnHeight[move.column] - 1;
 }
 
 char getSymbol(Turn turn) {
