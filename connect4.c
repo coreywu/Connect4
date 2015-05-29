@@ -14,6 +14,7 @@ typedef struct {
     Turn turn;
     char board [6][7];
     int columnHeight [7];
+    bool valid;
 } GameState;
 
 typedef struct {
@@ -29,16 +30,17 @@ typedef struct {
 Move getMove();
 Move getHumanMove();
 Move getAIMove();
-void performMove();
+void performMove(Move);
+void performMoveOn(GameState, Move);
 
 char getSymbol();
 void printBoard();
 char checkWinner();
 
-GameState* getSuccessors(GameState);
-AIMove value(Turn, char[6][7]);
-AIMove maxValue(char[6][7]);
-AIMove minValue(char[6][7]);
+void getSuccessors(GameState[7], GameState);
+AIMove value(Turn, GameState);
+AIMove maxValue(GameState);
+AIMove minValue(GameState);
 
 int player1 = HUMAN;
 int player2 = HUMAN;
@@ -50,7 +52,7 @@ void playGame() {
     char winner;
     bool end = false;
 
-    gameState = (GameState){.turn = 0, .board = 0, .columnHeight = {5, 5, 5, 5, 5, 5, 5}};
+    gameState = (GameState){.turn = 0, .board = 0, .columnHeight = {5, 5, 5, 5, 5, 5, 5}, .valid = false};
 
     for (i = 0; i < 6; i++) {
         for (j = 0; j < 7; j++) {
@@ -119,54 +121,51 @@ Move getAIMove() {
     return move;
 }
 
-GameState* getSuccessors(GameState newGameState) {
+void getSuccessors(GameState successors[7], GameState newGameState) {
     int i;
-    GameState successors[7];
     for (i = 0; i < 7; i++) {
-        if (newGameState.board[0][i] != " ") {
-	    successors[i] = ((void *)0);
+	successors[i] = newGameState;
+        if (newGameState.board[0][i] != ' ') {
+	    successors[i].valid = false;
 	} else {
-	    successors[i] = newGameState;
 	    successors[i].turn = !successors[i].turn;
 	    Move move = {getSymbol(successors[i].turn), i};
 	    performMoveOn(successors[i], move);
 	}
     }
-    return successors;
 }
 
 /**
  * Minimax algorithm implementation of AI.
  * AI's symbol is 'O' and turn is 1.
  **/
-AIMove value(Turn turn, char board[6][7]) {
-    if (checkWinner(board) == 'O') {
+AIMove value(Turn turn, GameState gameState) {
+    if (checkWinner(gameState.board) == 'O') {
         AIMove aiMove = {0, 1};
         return aiMove;
-    } else if (checkWinner(board) == 'X') {
+    } else if (checkWinner(gameState.board) == 'X') {
         AIMove aiMove = {0, -1};
         return aiMove;
-    } else if (checkWinner(board) == '-') {
+    } else if (checkWinner(gameState.board) == '-') {
         AIMove aiMove = {0, 0};
         return aiMove;
     } else {
         if (turn) {
-            return maxValue(board);
+            return maxValue(gameState);
         } else {
-            return minValue(board);
+            return minValue(gameState);
         }
     }
 }
 
-AIMove maxValue(char board[6][7]) {
+AIMove maxValue(GameState gameState) {
     int i;
     AIMove successorMove;
     AIMove aiMove = {INT_MIN, 0};
     GameState successors[7];
-    memcpy(getSuccessors(board), successors, sizeof(GameState));
-    //successors = getSuccessors(board);
+    getSuccessors(successors, gameState);
     for (i = 0; i < 7; i++) {
-        successorMove = value(0, successors[i].board);
+        successorMove = value(0, successors[i]);
         if (successorMove.value > aiMove.value) {
             aiMove = successorMove;
         }
@@ -174,15 +173,14 @@ AIMove maxValue(char board[6][7]) {
     return aiMove;
 }
 
-AIMove minValue(char board[6][7]) {
+AIMove minValue(GameState gameState) {
     int i;
     AIMove successorMove;
     AIMove aiMove = {INT_MAX, 0};
     GameState successors[7];
-    memcpy(getSuccessors(board), successors, sizeof(GameState));
-    //successors = getSuccessors(board);
+    getSuccessors(successors, gameState);
     for (i = 0; i < 7; i++) {
-        successorMove = value(1, successors[i].board);
+        successorMove = value(1, successors[i]);
         if (successorMove.value < aiMove.value) {
             aiMove = successorMove;
         }
