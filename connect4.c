@@ -131,6 +131,10 @@ void getSuccessors(GameState successors[7], GameState newGameState) {
 	    successors[i].turn = !successors[i].turn;
 	    Move move = {getSymbol(successors[i].turn), i};
 	    performMoveOn(successors[i], move);
+	    if (i == 0) {
+		printf("I == 0: %i \n ", move.column);
+		printBoard2(successors[0].board);
+	    }
 	}
     }
 }
@@ -195,8 +199,14 @@ void performMove(Move move) {
 }
 
 void performMoveOn(GameState newGameState, Move move) {
-    newGameState.board[gameState.columnHeight[move.column]][move.column] = move.symbol;
-    newGameState.columnHeight[move.column] = gameState.columnHeight[move.column] - 1;
+    newGameState.board[newGameState.columnHeight[move.column]][move.column] = move.symbol;
+    if (move.column == 0) {
+    	printf("MOVE SYMBOL: %c \n", move.symbol);
+    	printf("COLUMN HEIGHT: %i \n", newGameState.columnHeight[move.column]);
+    	printf("NEW SYMBOL: %c \n", newGameState.board[newGameState.columnHeight[move.column]][move.column]);
+	printBoard2(newGameState.board);
+    }
+    newGameState.columnHeight[move.column] = newGameState.columnHeight[move.column] - 1;
 }
 
 char getSymbol(Turn turn) {
@@ -438,6 +448,26 @@ int main(void) {
     printf("TestDraw - expected: - \n");
     printf("Winner: %c \n", checkWinner(drawBoard));
     printf("\n");
+
+    // Test getSuccessors
+    GameState emptyBoardGameState = (GameState){.turn = 0, .board = 0, .columnHeight = {5, 5, 5, 5, 5, 5, 5}, .valid = false};
+
+    for (i = 0; i < 6; i++) {
+        for (j = 0; j < 7; j++) {
+            emptyBoardGameState.board[i][j] = ' ';
+        }
+    }
+
+    GameState emptyBoardSuccessors[7];
+
+    getSuccessors(emptyBoardSuccessors, emptyBoardGameState);
+
+    printf("Empty board game state: \n");
+    printBoard2(emptyBoardGameState.board);
+
+    printf("Empty board successor[0] game state: \n");
+    printBoard2(emptyBoardSuccessors[0].board);
+
 
     return 0;
 }
