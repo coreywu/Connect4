@@ -31,10 +31,11 @@ Move getMove();
 Move getHumanMove();
 Move getAIMove();
 void performMove(Move);
-void performMoveOn(GameState, Move);
+void performMoveOn(GameState*, Move);
 
 char getSymbol();
 void printBoard();
+void printBoard2(char[6][7]);
 char checkWinner();
 
 void getSuccessors(GameState[7], GameState);
@@ -130,10 +131,11 @@ void getSuccessors(GameState successors[7], GameState newGameState) {
 	} else {
 	    successors[i].turn = !successors[i].turn;
 	    Move move = {getSymbol(successors[i].turn), i};
-	    performMoveOn(successors[i], move);
+	    performMoveOn(&successors[i], move);
 	    if (i == 0) {
 		printf("I == 0: %i \n ", move.column);
 		printBoard2(successors[0].board);
+    		printf("SYMBOL: %c \n", successors[0].board[successors[0].columnHeight[move.column]][move.column]);
 	    }
 	}
     }
@@ -198,15 +200,15 @@ void performMove(Move move) {
     gameState.columnHeight[move.column] = gameState.columnHeight[move.column] - 1; 
 }
 
-void performMoveOn(GameState newGameState, Move move) {
-    newGameState.board[newGameState.columnHeight[move.column]][move.column] = move.symbol;
+void performMoveOn(GameState *newGameState, Move move) {
+    (*newGameState).board[(*newGameState).columnHeight[move.column]][move.column] = move.symbol;
     if (move.column == 0) {
     	printf("MOVE SYMBOL: %c \n", move.symbol);
-    	printf("COLUMN HEIGHT: %i \n", newGameState.columnHeight[move.column]);
-    	printf("NEW SYMBOL: %c \n", newGameState.board[newGameState.columnHeight[move.column]][move.column]);
-	printBoard2(newGameState.board);
+    	printf("COLUMN HEIGHT: %i \n", (*newGameState).columnHeight[move.column]);
+    	printf("NEW SYMBOL: %c \n", (*newGameState).board[(*newGameState).columnHeight[move.column]][move.column]);
+	printBoard2((*newGameState).board);
     }
-    newGameState.columnHeight[move.column] = newGameState.columnHeight[move.column] - 1;
+    (*newGameState).columnHeight[move.column] = (*newGameState).columnHeight[move.column] - 1;
 }
 
 char getSymbol(Turn turn) {
