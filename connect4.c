@@ -127,17 +127,19 @@ void getSuccessors(GameState successors[7], GameState newGameState) {
     for (i = 0; i < 7; i++) {
 	successors[i] = newGameState;
         if (newGameState.board[0][i] != ' ') {
-	    successors[i].valid = false;
-	} else {
-	    successors[i].turn = !successors[i].turn;
-	    Move move = {getSymbol(successors[i].turn), i};
-	    performMoveOn(&successors[i], move);
-	    if (i == 0) {
-		printf("I == 0: %i \n ", move.column);
-		printBoard2(successors[0].board);
-    		printf("SYMBOL: %c \n", successors[0].board[successors[0].columnHeight[move.column]][move.column]);
-	    }
-	}
+            printf("VALID = FALSE, %c \n", newGameState.board[0][i]);
+	        successors[i].valid = false;
+	    } else {
+            successors[i].turn = !successors[i].turn;
+            Move move = {getSymbol(successors[i].turn), i};
+            performMoveOn(&successors[i], move);
+            /*
+            if (i == 0) {
+                printf("SUCCESSORS[0].BOARD: \n");
+                printBoard2(successors[0].board);
+            }
+            */
+        }
     }
 }
 
@@ -163,7 +165,6 @@ AIMove value(Turn turn, GameState gameState) {
         }
     }
 }
-
 AIMove maxValue(GameState gameState) {
     int i;
     AIMove successorMove;
@@ -202,13 +203,14 @@ void performMove(Move move) {
 
 void performMoveOn(GameState *newGameState, Move move) {
     (*newGameState).board[(*newGameState).columnHeight[move.column]][move.column] = move.symbol;
-    if (move.column == 0) {
-    	printf("MOVE SYMBOL: %c \n", move.symbol);
-    	printf("COLUMN HEIGHT: %i \n", (*newGameState).columnHeight[move.column]);
-    	printf("NEW SYMBOL: %c \n", (*newGameState).board[(*newGameState).columnHeight[move.column]][move.column]);
-	printBoard2((*newGameState).board);
-    }
     (*newGameState).columnHeight[move.column] = (*newGameState).columnHeight[move.column] - 1;
+    printf("SUCCESSORS.BOARD: %i \n", (*newGameState).columnHeight[move.column]);
+    /*
+    if (move.column == 0) {
+        printf("SUCCESSORS[0].BOARD: %i \n", (*newGameState).columnHeight[0]);
+        printBoard2((*newGameState).board);
+    }
+    */
 }
 
 char getSymbol(Turn turn) {
@@ -452,24 +454,171 @@ int main(void) {
     printf("\n");
 
     // Test getSuccessors
-    GameState emptyBoardGameState = (GameState){.turn = 0, .board = 0, .columnHeight = {5, 5, 5, 5, 5, 5, 5}, .valid = false};
+    GameState successorsTestGameState = (GameState){.turn = 0, .board = 0, .columnHeight = {5, 5, 5, 5, 5, 5, 5}, .valid = true};
 
     for (i = 0; i < 6; i++) {
         for (j = 0; j < 7; j++) {
-            emptyBoardGameState.board[i][j] = ' ';
+            successorsTestGameState.board[i][j] = ' ';
         }
     }
 
-    GameState emptyBoardSuccessors[7];
+    GameState successors[7];
 
-    getSuccessors(emptyBoardSuccessors, emptyBoardGameState);
+    /*
+    // Test successors of empty board
+    getSuccessors(successors, successorsTestGameState);
 
     printf("Empty board game state: \n");
-    printBoard2(emptyBoardGameState.board);
+    printBoard2(successorsTestGameState.board);
 
     printf("Empty board successor[0] game state: \n");
-    printBoard2(emptyBoardSuccessors[0].board);
+    printBoard2(successors[0].board);
+    printf("\n");
 
+    printf("Empty board successor[1] game state: \n");
+    printBoard2(successors[1].board);
+    printf("\n");
+
+    printf("Empty board successor[2] game state: \n");
+    printBoard2(successors[2].board);
+    printf("\n");
+
+    printf("Empty board successor[3] game state: \n");
+    printBoard2(successors[3].board);
+    printf("\n");
+
+    printf("Empty board successor[4] game state: \n");
+    printBoard2(successors[4].board);
+    printf("\n");
+
+    printf("Empty board successor[5] game state: \n");
+    printBoard2(successors[5].board);
+    printf("\n");
+
+    printf("Empty board successor[6] game state: \n");
+    printBoard2(successors[6].board);
+    printf("\n");
+
+    */
+
+
+    successorsTestGameState.board[5][0] = 'X';
+    successorsTestGameState.columnHeight[0] = 4;
+    successorsTestGameState.board[5][1] = 'O';
+    successorsTestGameState.columnHeight[1] = 4;
+    successorsTestGameState.board[5][2] = 'X';
+    successorsTestGameState.columnHeight[2] = 4;
+    successorsTestGameState.board[5][3] = 'O';
+    successorsTestGameState.columnHeight[3] = 4;
+    successorsTestGameState.board[5][4] = 'X';
+    successorsTestGameState.columnHeight[4] = 4;
+    successorsTestGameState.board[5][5] = 'O';
+    successorsTestGameState.columnHeight[5] = 4;
+    successorsTestGameState.board[5][6] = 'X';
+    successorsTestGameState.columnHeight[6] = 4;
+
+    // Test successors of board with 1 symbol in each column
+    /*
+    getSuccessors(successors, successorsTestGameState);
+
+    printf("Board game state: \n");
+    printBoard2(successorsTestGameState.board);
+
+    printf("Empty board successor[0] game state: \n");
+    printBoard2(successors[0].board);
+    printf("\n");
+
+    printf("Empty board successor[1] game state: \n");
+    printBoard2(successors[1].board);
+    printf("\n");
+
+    printf("Empty board successor[2] game state: \n");
+    printBoard2(successors[2].board);
+    printf("\n");
+
+    printf("Empty board successor[3] game state: \n");
+    printBoard2(successors[3].board);
+    printf("\n");
+
+    printf("Empty board successor[4] game state: \n");
+    printBoard2(successors[4].board);
+    printf("\n");
+
+    printf("Empty board successor[5] game state: \n");
+    printBoard2(successors[5].board);
+    printf("\n");
+
+    printf("Empty board successor[6] game state: \n");
+    printBoard2(successors[6].board);
+    printf("\n");
+
+    */
+
+    successorsTestGameState.board[4][0] = 'O';
+    successorsTestGameState.board[4][1] = 'O';
+    successorsTestGameState.board[4][2] = 'X';
+    successorsTestGameState.board[4][3] = 'X';
+    successorsTestGameState.board[4][4] = 'O';
+    successorsTestGameState.board[4][5] = 'O';
+
+    successorsTestGameState.board[3][0] = 'X';
+    successorsTestGameState.board[3][1] = 'X';
+    successorsTestGameState.board[3][2] = 'O';
+    successorsTestGameState.board[3][3] = 'X';
+    successorsTestGameState.board[3][4] = 'X';
+
+    successorsTestGameState.board[2][0] = 'O';
+    successorsTestGameState.board[2][1] = 'X';
+    successorsTestGameState.board[2][2] = 'O';
+    successorsTestGameState.board[2][3] = 'X';
+
+    successorsTestGameState.board[1][0] = 'X';
+    successorsTestGameState.board[1][1] = 'O';
+    successorsTestGameState.board[1][2] = 'X';
+
+    successorsTestGameState.board[0][0] = 'O';
+    successorsTestGameState.board[0][1] = 'O';
+
+    successorsTestGameState.columnHeight[0] = 0;
+    successorsTestGameState.columnHeight[1] = 0;
+    successorsTestGameState.columnHeight[2] = 0;
+    successorsTestGameState.columnHeight[3] = 1;
+    successorsTestGameState.columnHeight[4] = 2;
+    successorsTestGameState.columnHeight[5] = 3;
+
+    // Test successors with varying column heights
+    getSuccessors(successors, successorsTestGameState);
+
+    printf("Board game state: \n");
+    printBoard2(successorsTestGameState.board);
+
+    printf("Empty board successor[0] game state: valid: %i \n", successors[0].valid);
+    printBoard2(successors[0].board);
+    printf("\n");
+
+    printf("Empty board successor[1] game state: valid: %i \n", successors[1].valid);
+    printBoard2(successors[1].board);
+    printf("\n");
+
+    printf("Empty board successor[2] game state: valid: %i \n", successors[2].valid);
+    printBoard2(successors[2].board);
+    printf("\n");
+
+    printf("Empty board successor[3] game state: valid: %i \n", successors[3].valid);
+    printBoard2(successors[3].board);
+    printf("\n");
+
+    printf("Empty board successor[4] game state: valid: %i \n", successors[4].valid);
+    printBoard2(successors[4].board);
+    printf("\n");
+
+    printf("Empty board successor[5] game state: valid: %i \n", successors[5].valid);
+    printBoard2(successors[5].board);
+    printf("\n");
+
+    printf("Empty board successor[6] game state: valid: %i \n", successors[6].valid);
+    printBoard2(successors[6].board);
+    printf("\n");
 
     return 0;
 }
