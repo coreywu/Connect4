@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define HUMAN 1
 #define AI 0
@@ -43,8 +44,8 @@ AIMove value(Turn, GameState);
 AIMove maxValue(GameState);
 AIMove minValue(GameState);
 
-int player1 = HUMAN;
-int player2 = HUMAN;
+int player1 = HUMAN;    // corresponds to turn 0
+int player2 = AI;
 
 GameState gameState;
 
@@ -64,7 +65,7 @@ void playGame() {
 
     Move move;
     while(!end) {
-        move = getMove();
+        move = getMove(gameState.turn);
         performMove(move);
         printBoard(gameState);
         printf("Move: %c -> %i \n", move.symbol, move.column);
@@ -84,7 +85,7 @@ void playGame() {
 Move getMove(int playerNum) {
     Move move;
     char playerSymbol = getSymbol(gameState.turn);
-    if (playerNum == 1) {
+    if (playerNum == 0) {
         if (player1 == HUMAN) {
             move = getHumanMove();
         } else {
@@ -117,8 +118,8 @@ Move getHumanMove() {
 
 Move getAIMove() {
     // TODO
-
-    Move move = {0, 0};
+    int randNum = rand() % 7;
+    Move move = {'O', randNum};
     return move;
 }
 
@@ -133,12 +134,6 @@ void getSuccessors(GameState successors[7], GameState newGameState) {
             successors[i].turn = !successors[i].turn;
             Move move = {getSymbol(successors[i].turn), i};
             performMoveOn(&successors[i], move);
-            /*
-            if (i == 0) {
-                printf("SUCCESSORS[0].BOARD: \n");
-                printBoard2(successors[0].board);
-            }
-            */
         }
     }
 }
@@ -204,13 +199,6 @@ void performMove(Move move) {
 void performMoveOn(GameState *newGameState, Move move) {
     (*newGameState).board[(*newGameState).columnHeight[move.column]][move.column] = move.symbol;
     (*newGameState).columnHeight[move.column] = (*newGameState).columnHeight[move.column] - 1;
-    printf("SUCCESSORS.BOARD: %i \n", (*newGameState).columnHeight[move.column]);
-    /*
-    if (move.column == 0) {
-        printf("SUCCESSORS[0].BOARD: %i \n", (*newGameState).columnHeight[0]);
-        printBoard2((*newGameState).board);
-    }
-    */
 }
 
 char getSymbol(Turn turn) {
@@ -322,7 +310,7 @@ char checkWinner(char board[6][7]) {
 int main(void) {
     int i, j;
 
-    //playGame();
+    playGame();
 
     // Testing
     char verticalBoard [6][7];
@@ -586,6 +574,7 @@ int main(void) {
     successorsTestGameState.columnHeight[4] = 2;
     successorsTestGameState.columnHeight[5] = 3;
 
+    /*
     // Test successors with varying column heights
     getSuccessors(successors, successorsTestGameState);
 
@@ -619,6 +608,7 @@ int main(void) {
     printf("Empty board successor[6] game state: valid: %i \n", successors[6].valid);
     printBoard2(successors[6].board);
     printf("\n");
+    */
 
     return 0;
 }
