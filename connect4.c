@@ -144,10 +144,10 @@ void getSuccessors(GameState successors[7], GameState newGameState) {
  **/
 AIMove value(Turn turn, GameState gameState) {
     if (checkWinner(gameState.board) == 'O') {
-        AIMove aiMove = {0, 1};
+        AIMove aiMove = {1, 1};
         return aiMove;
     } else if (checkWinner(gameState.board) == 'X') {
-        AIMove aiMove = {0, -1};
+        AIMove aiMove = {-1, -1};
         return aiMove;
     } else if (checkWinner(gameState.board) == '-') {
         AIMove aiMove = {0, 0};
@@ -310,7 +310,7 @@ char checkWinner(char board[6][7]) {
 int main(void) {
     int i, j;
 
-    playGame();
+    //playGame();
 
     // Testing
     char verticalBoard [6][7];
@@ -609,6 +609,26 @@ int main(void) {
     printBoard2(successors[6].board);
     printf("\n");
     */
+
+    // Test value
+    GameState valueTestGameState = (GameState){.turn = 0, .board = 0, .columnHeight = {5, 5, 5, 5, 5, 5, 5}, .valid = true};
+
+    for (i = 0; i < 6; i++) {
+        for (j = 0; j < 7; j++) {
+            valueTestGameState.board[i][j] = ' ';
+        }
+    }
+
+    valueTestGameState.board[5][0] = 'O';
+    valueTestGameState.board[5][1] = 'O';
+    valueTestGameState.board[5][2] = 'O';
+    valueTestGameState.board[5][3] = 'O';
+    valueTestGameState.board[5][4] = 'O';
+    valueTestGameState.board[5][5] = 'O';
+    valueTestGameState.board[5][6] = 'O';
+ 
+    AIMove aiMove = value(0, valueTestGameState);   
+    printf("VALUE: %c, %c \n", aiMove.value, aiMove.move.symbol);
 
     return 0;
 }
