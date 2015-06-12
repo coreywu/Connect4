@@ -128,7 +128,6 @@ void getSuccessors(GameState successors[7], GameState newGameState) {
     for (i = 0; i < 7; i++) {
 	successors[i] = newGameState;
         if (newGameState.board[0][i] != ' ') {
-            printf("VALID = FALSE, %c \n", newGameState.board[0][i]);
 	        successors[i].valid = false;
 	    } else {
             successors[i].turn = !successors[i].turn;
@@ -144,13 +143,14 @@ void getSuccessors(GameState successors[7], GameState newGameState) {
  **/
 AIMove value(Turn turn, GameState gameState) {
     if (checkWinner(gameState.board) == 'O') {
-        AIMove aiMove = {1, 1};
+        AIMove aiMove = {.value = 1, .move = 0};
+        printf("WINNER: OOOOOO %i \n", aiMove.value);
         return aiMove;
     } else if (checkWinner(gameState.board) == 'X') {
-        AIMove aiMove = {-1, -1};
+        AIMove aiMove = {.value = -1, .move = 0};
         return aiMove;
     } else if (checkWinner(gameState.board) == '-') {
-        AIMove aiMove = {0, 0};
+        AIMove aiMove = {.value = 0, .move = 0};
         return aiMove;
     } else {
         if (turn) {
@@ -622,13 +622,11 @@ int main(void) {
     valueTestGameState.board[5][0] = 'O';
     valueTestGameState.board[5][1] = 'O';
     valueTestGameState.board[5][2] = 'O';
-    valueTestGameState.board[5][3] = 'O';
-    valueTestGameState.board[5][4] = 'O';
-    valueTestGameState.board[5][5] = 'O';
-    valueTestGameState.board[5][6] = 'O';
  
-    AIMove aiMove = value(0, valueTestGameState);   
-    printf("VALUE: %c, %c \n", aiMove.value, aiMove.move.symbol);
+    AIMove aiMove = value(1, valueTestGameState);   
+    printBoard2(valueTestGameState.board);
+    printf("WINNER %c \n", checkWinner(valueTestGameState.board));
+    printf("VALUE: %i, %c \n", aiMove.value, aiMove.move.symbol);
 
     return 0;
 }
