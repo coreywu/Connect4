@@ -166,12 +166,38 @@ AIMove maxValue(GameState gameState) {
     AIMove aiMove = {INT_MIN, 0};
     GameState successors[7];
     getSuccessors(successors, gameState);
+
+    //printf("SUCCESSORs[0]: %i \n", value(0, successors[0]).value);
+    printBoard2(successors[0].board);
+
+    //printf("SUCCESSORs[1]: %i \n", value(0, successors[1]).value);
+    printBoard2(successors[1].board);
+
+    //printf("SUCCESSORs[2]: %i \n", value(0, successors[2]).value);
+    printBoard2(successors[2].board);
+
+    printf("SUCCESSORs[3]: %i \n", value(0, successors[3]).value);
+    printBoard2(successors[3].board);
+
+    //printf("SUCCESSORs[4]: %i \n", value(0, successors[4]).value);
+    printBoard2(successors[4].board);
+
+    //printf("SUCCESSORs[5]: %i \n", value(0, successors[5]).value);
+    printBoard2(successors[5].board);
+
+    //printf("SUCCESSORs[6]: %i \n", value(0, successors[6]).value);
+    printBoard2(successors[6].board);
+
+    /*
     for (i = 0; i < 7; i++) {
-        successorMove = value(0, successors[i]);
-        if (successorMove.value > aiMove.value) {
-            aiMove = successorMove;
+        if (successors[i].valid == true) {
+            successorMove = value(0, successors[i]);
+            if (successorMove.value > aiMove.value) {
+                aiMove = successorMove;
+            }
         }
     }
+    */
     return aiMove;
 }
 
@@ -182,9 +208,11 @@ AIMove minValue(GameState gameState) {
     GameState successors[7];
     getSuccessors(successors, gameState);
     for (i = 0; i < 7; i++) {
-        successorMove = value(1, successors[i]);
-        if (successorMove.value < aiMove.value) {
-            aiMove = successorMove;
+        if (successors[i].valid == true) {
+            successorMove = value(1, successors[i]);
+            if (successorMove.value < aiMove.value) {
+                aiMove = successorMove;
+            }
         }
     }
     return aiMove;
@@ -622,6 +650,9 @@ int main(void) {
     valueTestGameState.board[5][0] = 'O';
     valueTestGameState.board[5][1] = 'O';
     valueTestGameState.board[5][2] = 'O';
+    valueTestGameState.columnHeight[0] = 4;
+    valueTestGameState.columnHeight[1] = 4;
+    valueTestGameState.columnHeight[2] = 4;
  
     AIMove aiMove = value(1, valueTestGameState);   
     printBoard2(valueTestGameState.board);
