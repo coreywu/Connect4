@@ -40,9 +40,9 @@ void printBoard2(char[6][7]);
 char checkWinner();
 
 void getSuccessors(GameState[7], GameState);
-AIMove value(Turn, GameState);
-AIMove maxValue(GameState);
-AIMove minValue(GameState);
+AIMove value(Turn, GameState, int);
+AIMove maxValue(GameState, int);
+AIMove minValue(GameState, int);
 
 int player1 = HUMAN;    // corresponds to turn 0
 int player2 = AI;
@@ -141,10 +141,10 @@ void getSuccessors(GameState successors[7], GameState newGameState) {
  * Minimax algorithm implementation of AI.
  * AI's symbol is 'O' and turn is 1.
  **/
-AIMove value(Turn turn, GameState gameState) {
+AIMove value(Turn turn, GameState gameState, int depth) {
     if (checkWinner(gameState.board) == 'O') {
         AIMove aiMove = {.value = 1, .move = 0};
-        printf("WINNER: OOOOOO %i \n", aiMove.value);
+        //printf("WINNER: OOOOOO %i \n", aiMove.value);
         return aiMove;
     } else if (checkWinner(gameState.board) == 'X') {
         AIMove aiMove = {.value = -1, .move = 0};
@@ -152,15 +152,18 @@ AIMove value(Turn turn, GameState gameState) {
     } else if (checkWinner(gameState.board) == '-') {
         AIMove aiMove = {.value = 0, .move = 0};
         return aiMove;
+    } else if (depth == 0) {
+        AIMove aiMove = {.value = 0, .move = 0};
+        return aiMove;
     } else {
         if (turn) {
-            return maxValue(gameState);
+            return maxValue(gameState, depth);
         } else {
-            return minValue(gameState);
+            return minValue(gameState, depth);
         }
     }
 }
-AIMove maxValue(GameState gameState) {
+AIMove maxValue(GameState gameState, int depth) {
     int i;
     AIMove successorMove;
     AIMove aiMove = {INT_MIN, 0};
@@ -168,40 +171,39 @@ AIMove maxValue(GameState gameState) {
     getSuccessors(successors, gameState);
 
     //printf("SUCCESSORs[0]: %i \n", value(0, successors[0]).value);
-    printBoard2(successors[0].board);
+    //printBoard2(successors[0].board);
 
     //printf("SUCCESSORs[1]: %i \n", value(0, successors[1]).value);
-    printBoard2(successors[1].board);
+    //printBoard2(successors[1].board);
 
     //printf("SUCCESSORs[2]: %i \n", value(0, successors[2]).value);
-    printBoard2(successors[2].board);
+    //printBoard2(successors[2].board);
 
-    printf("SUCCESSORs[3]: %i \n", value(0, successors[3]).value);
-    printBoard2(successors[3].board);
+    //printf("SUCCESSORs[3]: %i \n", value(0, successors[3]).value);
+    //printBoard2(successors[3].board);
 
     //printf("SUCCESSORs[4]: %i \n", value(0, successors[4]).value);
-    printBoard2(successors[4].board);
+    //printBoard2(successors[4].board);
 
     //printf("SUCCESSORs[5]: %i \n", value(0, successors[5]).value);
-    printBoard2(successors[5].board);
+    //printBoard2(successors[5].board);
 
     //printf("SUCCESSORs[6]: %i \n", value(0, successors[6]).value);
-    printBoard2(successors[6].board);
+    //printBoard2(successors[6].board);
 
-    /*
     for (i = 0; i < 7; i++) {
         if (successors[i].valid == true) {
-            successorMove = value(0, successors[i]);
+            successorMove = value(0, successors[i], depth - 1);
             if (successorMove.value > aiMove.value) {
                 aiMove = successorMove;
+                aiMove.move.column = i;
             }
         }
     }
-    */
     return aiMove;
 }
 
-AIMove minValue(GameState gameState) {
+AIMove minValue(GameState gameState, int depth) {
     int i;
     AIMove successorMove;
     AIMove aiMove = {INT_MAX, 0};
@@ -209,9 +211,10 @@ AIMove minValue(GameState gameState) {
     getSuccessors(successors, gameState);
     for (i = 0; i < 7; i++) {
         if (successors[i].valid == true) {
-            successorMove = value(1, successors[i]);
+            successorMove = value(1, successors[i], depth - 1);
             if (successorMove.value < aiMove.value) {
                 aiMove = successorMove;
+                aiMove.move.column = i;
             }
         }
     }
@@ -654,10 +657,11 @@ int main(void) {
     valueTestGameState.columnHeight[1] = 4;
     valueTestGameState.columnHeight[2] = 4;
  
-    AIMove aiMove = value(1, valueTestGameState);   
+    AIMove aiMove = value(1, valueTestGameState, 1);   
+    printf("TEST VALUE: \n");
     printBoard2(valueTestGameState.board);
     printf("WINNER %c \n", checkWinner(valueTestGameState.board));
-    printf("VALUE: %i, %c \n", aiMove.value, aiMove.move.symbol);
+    printf("VALUE: %i, COLUMN: %i, SYMBOL: %c \n", aiMove.value, aiMove.move.column, aiMove.move.symbol);
 
     return 0;
 }
