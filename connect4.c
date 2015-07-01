@@ -221,6 +221,54 @@ AIMove minValue(GameState gameState, int depth) {
     return aiMove;
 }
 
+int heuristic(GameState gameState) {
+    char symbol = getSymbol(gameState.turn);
+    printf("SYMBOL: %c \n", symbol);
+    // check for guaranteed winning scenarios
+    // check for guaranteed losing scenarios
+    // check for 3 in a rows (agent and opponent)
+    // check for 2 in a rows (agent and opponent)
+    //for (gameState.board)
+}
+
+// Returns the number of symbols in a row adjacent to the current position 
+// Takes symbol, the board, and the position (row and column)
+int threeInARowCount(int turn, char board[6][7], int row, int column) {
+    int count = 0;
+    char symbol = getSymbol(turn);
+
+    printf("SYMBOL: %c: %c, %c, %c \n", symbol, board[column + 1][row], board[column + 2][row], board[column + 3][row]);
+
+    // down
+    if (board[column + 1][row] == symbol && board[column + 2][row] == symbol&& board[column + 3][row] == symbol) {
+        printf("COUNT++ \n");
+        count++;
+    }
+
+    /*
+    // left
+    if (board[column + 1][row] == symbol && board[column + 2][row] == symbol&& board[column + 3][row] == symbol) {
+        count++;
+    }
+
+    // right
+    if (board[column + 1][row] == symbol && board[column + 2][row] == symbol&& board[column + 3][row] == symbol) {
+        count++;
+    }
+
+    // down-left
+    if (board[column + 1][row] == symbol && board[column + 2][row] == symbol&& board[column + 3][row] == symbol) {
+        count++;
+    }
+
+    // down-right
+    if (board[column + 1][row] == symbol && board[column + 2][row] == symbol&& board[column + 3][row] == symbol) {
+        count++;
+    }
+    */
+    return count;
+}
+
 
 void performMove(Move move) {
     gameState.board[gameState.columnHeight[move.column]][move.column] = move.symbol;
@@ -662,6 +710,21 @@ int main(void) {
     printBoard2(valueTestGameState.board);
     printf("WINNER %c \n", checkWinner(valueTestGameState.board));
     printf("VALUE: %i, COLUMN: %i, SYMBOL: %c \n", aiMove.value, aiMove.move.column, aiMove.move.symbol);
+
+    // Test threeInARow function
+    GameState threeInARowGameState = (GameState){.turn = 0, .board = 0, .columnHeight = {5, 5, 5, 5, 5, 5, 5}, .valid = true};
+
+    for (i = 0; i < 6; i++) {
+        for (j = 0; j < 7; j++) {
+            threeInARowGameState.board[i][j] = ' ';
+        }
+    }
+
+    threeInARowGameState.board[5][0] = 'X';
+    threeInARowGameState.board[4][0] = 'X';
+    threeInARowGameState.board[3][0] = 'X';
+
+    printf("THREE IN A ROW: %i \n", threeInARowCount(threeInARowGameState.turn, threeInARowGameState.board, 0, 2));
 
     return 0;
 }
