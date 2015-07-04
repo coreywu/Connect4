@@ -11,6 +11,8 @@ enum { false, true };
 
 typedef int Turn;
 
+// board is [row][column]; row is increasing from top to bottom, column is
+// increasing from left to right
 typedef struct {
     Turn turn;
     char board [6][7];
@@ -222,53 +224,124 @@ AIMove minValue(GameState gameState, int depth) {
 }
 
 int heuristic(GameState gameState) {
+    int i, j;
     char symbol = getSymbol(gameState.turn);
     printf("SYMBOL: %c \n", symbol);
     // check for guaranteed winning scenarios
     // check for guaranteed losing scenarios
     // check for 3 in a rows (agent and opponent)
     // check for 2 in a rows (agent and opponent)
-    //for (gameState.board)
-}
 
-// Returns the number of symbols in a row adjacent to the current position 
-// Takes symbol, the board, and the position (row and column)
-int threeInARowCount(int turn, char board[6][7], int row, int column) {
-    int count = 0;
-    char symbol = getSymbol(turn);
-
-    printf("SYMBOL: %c: %c, %c, %c \n", symbol, board[column + 1][row], board[column + 2][row], board[column + 3][row]);
-
-    // down
-    if (board[column + 1][row] == symbol && board[column + 2][row] == symbol&& board[column + 3][row] == symbol) {
-        printf("COUNT++ \n");
-        count++;
+    int threeInARowCount = 0;
+    // TODO: Add a smarter check to not check every position
+    for (i = 0; i < 6; i++) {
+        for (j = 0; j < 7; j++) {
+            if (gameState.board[i][j] == ' ' && threeInARow(gameState.turn, gameState.board, i, j)) {
+                threeInARowCount++;
+            }
+        }
     }
 
-    /*
+    printf("THREE IN A ROW COUNT: %i \n", threeInARowCount);
+
+    int twoInARowCount = 0;
+    for (i = 0; i < 6; i++) {
+        for (j = 0; j < 7; j++) {
+            if (gameState.board[i][j] == ' ' && twoInARow(gameState.turn, gameState.board, i, j)) {
+                twoInARowCount++;
+            }
+        }
+    }
+
+    printf("TWO IN A ROW COUNT: %i \n", twoInARowCount);
+
+}
+
+// Returns whether there is three in a row adjacent to the current position 
+// Takes symbol, the board, and the position (row and column)
+int threeInARow(int turn, char board[6][7], int column, int row) {
+    char symbol = getSymbol(turn);
+
+    // down
+    if (row < 3) {
+        if (board[row + 1][column] == symbol && board[row + 2][column] == symbol&& board[row + 3][column] == symbol) {
+            return true;
+        }
+    }
+
     // left
-    if (board[column + 1][row] == symbol && board[column + 2][row] == symbol&& board[column + 3][row] == symbol) {
-        count++;
+    if (column >= 3) {
+        if (board[row][column - 1] == symbol && board[row][column - 2] == symbol&& board[row][column - 3] == symbol) {
+            return true;
+        }
     }
 
     // right
-    if (board[column + 1][row] == symbol && board[column + 2][row] == symbol&& board[column + 3][row] == symbol) {
-        count++;
+    if (column <= 3) {
+        if (board[row][column + 1] == symbol && board[row][column + 2] == symbol&& board[row][column + 3] == symbol) {
+            return true;
+        }
     }
 
     // down-left
-    if (board[column + 1][row] == symbol && board[column + 2][row] == symbol&& board[column + 3][row] == symbol) {
-        count++;
+    if (row < 3 && column >= 3) {
+        if (board[row + 1][column - 1] == symbol && board[row + 2][column - 2] == symbol&& board[row + 3][column - 3] == symbol) {
+            return true;
+        }
     }
 
     // down-right
-    if (board[column + 1][row] == symbol && board[column + 2][row] == symbol&& board[column + 3][row] == symbol) {
-        count++;
+    if (row < 3 && column <= 3) {
+        if (board[row + 1][column + 1] == symbol && board[row + 2][column + 2] == symbol&& board[row + 3][column + 3] == symbol) {
+            return true;
+        }
     }
-    */
-    return count;
+
+    return false;
 }
 
+// Returns whether there is two in a row adjacent to the current position 
+// Takes symbol, the board, and the position (row and column)
+int twoInARow(int turn, char board[6][7], int column, int row) {
+    char symbol = getSymbol(turn);
+
+    // down
+    if (row < 4) {
+        if (board[row + 1][column] == symbol && board[row + 2][column] == symbol) {
+            return true;
+        }
+    }
+
+    // left
+    if (column >= 2) {
+        if (board[row][column - 1] == symbol && board[row][column - 2] == symbol) {
+            return true;
+        }
+    }
+
+    // right
+    if (column <= 4) {
+        if (board[row][column + 1] == symbol && board[row][column + 2] == symbol) {
+            return true;
+        }
+    }
+
+    // down-left
+    if (row < 4 && column >= 2) {
+        if (board[row + 1][column - 1] == symbol && board[row + 2][column - 2] == symbol) {
+            return true;
+        }
+    }
+
+    // down-right
+    if (row < 4 && column <= 4) {
+        if (board[row + 1][column + 1] == symbol && board[row + 2][column + 2] == symbol) {
+            return true;
+        }
+    }
+
+    return false;
+}
 
 void performMove(Move move) {
     gameState.board[gameState.columnHeight[move.column]][move.column] = move.symbol;
@@ -724,7 +797,19 @@ int main(void) {
     threeInARowGameState.board[4][0] = 'X';
     threeInARowGameState.board[3][0] = 'X';
 
-    printf("THREE IN A ROW: %i \n", threeInARowCount(threeInARowGameState.turn, threeInARowGameState.board, 0, 2));
+    printf("THREE IN A ROW: %i \n", threeInARow(threeInARowGameState.turn, threeInARowGameState.board, 0, 2));
+
+    threeInARowGameState.board[5][1] = 'X';
+    threeInARowGameState.board[5][2] = 'X';
+    threeInARowGameState.board[4][1] = 'X';
+    threeInARowGameState.board[4][2] = 'X';
+    threeInARowGameState.board[3][1] = 'X';
+    threeInARowGameState.board[3][2] = 'X';
+    
+    printBoard2(threeInARowGameState.board);
+
+    printf("HEURISTIC: expected 3 in a row: 7 \n");
+    heuristic(threeInARowGameState);
 
     return 0;
 }
