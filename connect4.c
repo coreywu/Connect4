@@ -248,6 +248,7 @@ int heuristic(GameState gameState) {
     for (i = 0; i < 6; i++) {
         for (j = 0; j < 7; j++) {
             if (gameState.board[i][j] == ' ' && twoInARow(gameState.turn, gameState.board, i, j)) {
+                printf("TWO IN A ROW ++, %i, %i \n", i, j);
                 twoInARowCount++;
             }
         }
@@ -259,7 +260,7 @@ int heuristic(GameState gameState) {
 
 // Returns whether there is three in a row adjacent to the current position 
 // Takes symbol, the board, and the position (row and column)
-int threeInARow(int turn, char board[6][7], int column, int row) {
+int threeInARow(int turn, char board[6][7], int row, int column) {
     char symbol = getSymbol(turn);
 
     // down
@@ -302,7 +303,7 @@ int threeInARow(int turn, char board[6][7], int column, int row) {
 
 // Returns whether there is two in a row adjacent to the current position 
 // Takes symbol, the board, and the position (row and column)
-int twoInARow(int turn, char board[6][7], int column, int row) {
+int twoInARow(int turn, char board[6][7], int row, int column) {
     char symbol = getSymbol(turn);
 
     // down
