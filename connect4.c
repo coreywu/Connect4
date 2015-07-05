@@ -223,39 +223,88 @@ AIMove minValue(GameState gameState, int depth) {
     return aiMove;
 }
 
-int heuristic(GameState gameState) {
+double heuristic(GameState gameState) {
     int i, j;
+    double score = 0;
     char symbol = getSymbol(gameState.turn);
     printf("SYMBOL: %c \n", symbol);
     // check for guaranteed winning scenarios
-    // check for guaranteed losing scenarios
     // check for 3 in a rows (agent and opponent)
     // check for 2 in a rows (agent and opponent)
 
-    int threeInARowCount = 0;
+    int agentThreeInARowCount = 0;
+    int opponentThreeInARowCount = 0;
     // TODO: Add a smarter check to not check every position
     for (i = 0; i < 6; i++) {
         for (j = 0; j < 7; j++) {
-            if (gameState.board[i][j] == ' ' && threeInARow(gameState.turn, gameState.board, i, j)) {
-                threeInARowCount++;
+            if (gameState.board[i][j] == ' ') {
+                if (threeInARow(gameState.turn, gameState.board, i, j)) {
+                    agentThreeInARowCount++;
+                }
+                if (threeInARow(!gameState.turn, gameState.board, i, j)) {
+                    opponentThreeInARowCount++;
+                }
             }
         }
     }
 
-    printf("THREE IN A ROW COUNT: %i \n", threeInARowCount);
+    printf("AGENT THREE IN A ROW COUNT: %i \n", agentThreeInARowCount);
 
-    int twoInARowCount = 0;
+    // if there's more than 1 three in a row available, this is a guarenteed
+    // win; set to 0.9999 to have less value than a 'real' win
+    // single threeInARows is chosen somewhat arbitrarily; it is worth more
+    // than a single twoInARow
+    if (agentThreeInARowCount > 1) {
+        return 0.9999;
+    } else if (agentThreeInARowCount == 1) {
+        score += 0.15;
+    }
+
+    if (opponentThreeInARowCount > 1) {
+        return -0.9999;
+    } else if (opponentThreeInARowCount == 1) {
+        score -= 0.15;
+    }
+
+    int agentTwoInARowCount = 0;
+    int opponentTwoInARowCount = 0;
+
+    // values chosen to score 2 in a rows
+    // 0 two in a rows is worth 0, 1 is worth 0.2, etc
+    // function increases quadradically to 3.5 then increases at a lesser 
+    // rate; 
+    double twoInARowValues[8] = {0, 0.1, 0.2, 0.4, 0.6, 0.7, 0.8, 0.85};
+
+    // TODO: Add a smarter check to not check every position
     for (i = 0; i < 6; i++) {
         for (j = 0; j < 7; j++) {
-            if (gameState.board[i][j] == ' ' && twoInARow(gameState.turn, gameState.board, i, j)) {
-                printf("TWO IN A ROW ++, %i, %i \n", i, j);
-                twoInARowCount++;
+            if (gameState.board[i][j] == ' ') {
+                if (threeInARow(gameState.turn, gameState.board, i, j)) {
+                    agentTwoInARowCount++;
+                }
+                if (threeInARow(!gameState.turn, gameState.board, i, j)) {
+                    opponentTwoInARowCount++;
+                }
             }
         }
     }
 
-    printf("TWO IN A ROW COUNT: %i \n", twoInARowCount);
+    printf("AGENT TWO IN A ROW COUNT: %i \n", agentTwoInARowCount);
 
+    int netTwoInARowCount = agentTwoInARowCount - opponentTwoInARowCount;
+    if (netTwoInARowCount < 0) {
+        if (netTwoInARowCount < -7) {
+            netTwoInARowCount = -7;
+        }
+        score -= twoInARowValues[-1 * netTwoInARowCount];
+    } else {
+        if (netTwoInARowCount > 7) {
+            netTwoInARowCount = 7;
+        }
+        score += twoInARowValues[netTwoInARowCount];
+    }
+
+    return score;
 }
 
 // Returns whether there is three in a row adjacent to the current position 
