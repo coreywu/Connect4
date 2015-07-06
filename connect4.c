@@ -227,17 +227,30 @@ double heuristic(GameState gameState) {
     int i, j;
     double score = 0;
     char symbol = getSymbol(gameState.turn);
-    printf("SYMBOL: %c \n", symbol);
+    char opponentSymbol = getSymbol(!gameState.turn);
     // check for guaranteed winning scenarios
     // check for 3 in a rows (agent and opponent)
     // check for 2 in a rows (agent and opponent)
 
+    // Create a board that stores whether a threeInARow exists in that
+    // position. Positions with threeInARows do not gain value from also
+    // having twoInARows (which is a given).
+    char agentThreeInARowBoard[6][7];
+    char opponentThreeInARowBoard[6][7];
+
+    for (i = 0; i < 6; i++) {
+        for (j = 0; j < 7; j++) {
+            agentThreeInARowBoard[i][j] = ' ';
+            opponentThreeInARowBoard[i][j] = ' ';
+        }
+    }
+
     int agentThreeInARowCount = 0;
     int opponentThreeInARowCount = 0;
 
-    // values chosen to score 3 in a rows
+    // Array of calues chosen to score threeInARows.
     // 0 three-in-a-rows is worth 0, 1 is worth 0.2, etc
-    // function increases quadradically to 3.5 then increases at a lesser 
+    // Function increases quadradically to 3.5 then increases at a lesser 
     // rate 
     double threeInARowValues[8] = {0, 0.2, 0.4, 0.8, 1.2, 1.3, 1.4, 1.45};
 
@@ -247,9 +260,11 @@ double heuristic(GameState gameState) {
             if (gameState.board[i][j] == ' ') {
                 if (threeInARow(gameState.turn, gameState.board, i, j)) {
                     agentThreeInARowCount++;
+                    agentThreeInARowBoard[i][j] = symbol;
                 }
                 if (threeInARow(!gameState.turn, gameState.board, i, j)) {
                     opponentThreeInARowCount++;
+                    opponentThreeInARowBoard[i][j] = opponentSymbol;
                 }
             }
         }
@@ -258,7 +273,7 @@ double heuristic(GameState gameState) {
     printf("AGENT THREE IN A ROW COUNT: %i \n", agentThreeInARowCount);
 
     // TODO: determine when a win is guaranteed and ensure that the 
-    // moves to achieve it are taken
+    // moves to achieve it are taken (certain 3 in a rows are 'attainable')
     int netThreeInARowCount = agentThreeInARowCount - opponentThreeInARowCount;
     if (netThreeInARowCount < 0) {
         if (netThreeInARowCount < -7) {
@@ -276,9 +291,9 @@ double heuristic(GameState gameState) {
     int agentTwoInARowCount = 0;
     int opponentTwoInARowCount = 0;
 
-    // values chosen to score 2 in a rows
+    // Values chosen to score twoInARows
     // 0 two in a rows is worth 0, 1 is worth 0.2, etc
-    // function increases quadradically to 3.5 then increases at a lesser 
+    // Function increases quadradically to 3.5 then increases at a lesser 
     // rate 
     double twoInARowValues[8] = {0, 0.1, 0.2, 0.4, 0.6, 0.7, 0.8, 0.85};
 
@@ -286,10 +301,10 @@ double heuristic(GameState gameState) {
     for (i = 0; i < 6; i++) {
         for (j = 0; j < 7; j++) {
             if (gameState.board[i][j] == ' ') {
-                if (twoInARow(gameState.turn, gameState.board, i, j)) {
+                if (agentThreeInARowBoard[i][j] == ' ' && twoInARow(gameState.turn, gameState.board, i, j)) {
                     agentTwoInARowCount++;
                 }
-                if (twoInARow(!gameState.turn, gameState.board, i, j)) {
+                if (opponentThreeInARowBoard[i][j] == ' ' && twoInARow(!gameState.turn, gameState.board, i, j)) {
                     opponentTwoInARowCount++;
                 }
             }
@@ -875,9 +890,6 @@ int main(void) {
     threeInARowGameState.board[5][0] = 'X';
     threeInARowGameState.board[4][0] = 'X';
     threeInARowGameState.board[3][0] = 'X';
-
-    printf("THREE IN A ROW: %i \n", threeInARow(threeInARowGameState.turn, threeInARowGameState.board, 0, 2));
-
     threeInARowGameState.board[5][1] = 'X';
     threeInARowGameState.board[5][2] = 'X';
     threeInARowGameState.board[4][1] = 'X';
@@ -902,9 +914,6 @@ int main(void) {
     heuristicGameState.board[5][0] = 'X';
     heuristicGameState.board[4][0] = 'X';
     heuristicGameState.board[3][0] = 'X';
-
-    printf("THREE IN A ROW: %i \n", threeInARow(threeInARowGameState.turn, threeInARowGameState.board, 0, 2));
-
     heuristicGameState.board[5][1] = 'O';
     heuristicGameState.board[5][2] = 'O';
     heuristicGameState.board[4][1] = 'O';
