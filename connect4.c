@@ -234,6 +234,13 @@ double heuristic(GameState gameState) {
 
     int agentThreeInARowCount = 0;
     int opponentThreeInARowCount = 0;
+
+    // values chosen to score 3 in a rows
+    // 0 three-in-a-rows is worth 0, 1 is worth 0.2, etc
+    // function increases quadradically to 3.5 then increases at a lesser 
+    // rate 
+    double threeInARowValues[8] = {0, 0.2, 0.4, 0.8, 1.2, 1.3, 1.4, 1.45};
+
     // TODO: Add a smarter check to not check every position
     for (i = 0; i < 6; i++) {
         for (j = 0; j < 7; j++) {
@@ -250,21 +257,21 @@ double heuristic(GameState gameState) {
 
     printf("AGENT THREE IN A ROW COUNT: %i \n", agentThreeInARowCount);
 
-    // if there's more than 1 three in a row available, this is a guarenteed
-    // win; set to 0.9999 to have less value than a 'real' win
-    // single threeInARows is chosen somewhat arbitrarily; it is worth more
-    // than a single twoInARow
-    if (agentThreeInARowCount > 1) {
-        return 0.9999;
-    } else if (agentThreeInARowCount == 1) {
-        score += 0.15;
+    // TODO: determine when a win is guaranteed and ensure that the 
+    // moves to achieve it are taken
+    int netThreeInARowCount = agentThreeInARowCount - opponentThreeInARowCount;
+    if (netThreeInARowCount < 0) {
+        if (netThreeInARowCount < -7) {
+            netThreeInARowCount = -7;
+        }
+        score -= threeInARowValues[-1 * netThreeInARowCount];
+    } else {
+        if (netThreeInARowCount > 7) {
+            netThreeInARowCount = 7;
+        }
+        score += threeInARowValues[netThreeInARowCount];
     }
-
-    if (opponentThreeInARowCount > 1) {
-        return -0.9999;
-    } else if (opponentThreeInARowCount == 1) {
-        score -= 0.15;
-    }
+    printf("NET THREE IN A ROW COUNT: %i \n", netThreeInARowCount);
 
     int agentTwoInARowCount = 0;
     int opponentTwoInARowCount = 0;
@@ -272,17 +279,17 @@ double heuristic(GameState gameState) {
     // values chosen to score 2 in a rows
     // 0 two in a rows is worth 0, 1 is worth 0.2, etc
     // function increases quadradically to 3.5 then increases at a lesser 
-    // rate; 
+    // rate 
     double twoInARowValues[8] = {0, 0.1, 0.2, 0.4, 0.6, 0.7, 0.8, 0.85};
 
     // TODO: Add a smarter check to not check every position
     for (i = 0; i < 6; i++) {
         for (j = 0; j < 7; j++) {
             if (gameState.board[i][j] == ' ') {
-                if (threeInARow(gameState.turn, gameState.board, i, j)) {
+                if (twoInARow(gameState.turn, gameState.board, i, j)) {
                     agentTwoInARowCount++;
                 }
-                if (threeInARow(!gameState.turn, gameState.board, i, j)) {
+                if (twoInARow(!gameState.turn, gameState.board, i, j)) {
                     opponentTwoInARowCount++;
                 }
             }
@@ -303,6 +310,7 @@ double heuristic(GameState gameState) {
         }
         score += twoInARowValues[netTwoInARowCount];
     }
+    printf("NET TWO IN A ROW COUNT: %i \n", netTwoInARowCount);
 
     return score;
 }
@@ -319,7 +327,7 @@ int threeInARow(int turn, char board[6][7], int row, int column) {
         }
     }
 
-    // left
+    // left (XXX-)
     if (column >= 3) {
         if (board[row][column - 1] == symbol && board[row][column - 2] == symbol&& board[row][column - 3] == symbol) {
             return true;
@@ -343,6 +351,20 @@ int threeInARow(int turn, char board[6][7], int row, int column) {
     // down-right
     if (row < 3 && column <= 3) {
         if (board[row + 1][column + 1] == symbol && board[row + 2][column + 2] == symbol&& board[row + 3][column + 3] == symbol) {
+            return true;
+        }
+    }
+
+    // around (XX-X)
+    if (column >= 2) {
+        if (board[row][column - 1] == symbol && board[row][column - 2] == symbol&& board[row][column + 1] == symbol) {
+            return true;
+        }
+    }
+
+    // around (X-XX)
+    if (column <= 4) {
+        if (board[row][column + 1] == symbol && board[row][column + 2] == symbol&& board[row][column - 1] == symbol) {
             return true;
         }
     }
@@ -386,6 +408,13 @@ int twoInARow(int turn, char board[6][7], int row, int column) {
     // down-right
     if (row < 4 && column <= 4) {
         if (board[row + 1][column + 1] == symbol && board[row + 2][column + 2] == symbol) {
+            return true;
+        }
+    }
+
+    // around (X-X)
+    if (column <= 5 && column >= 1) {
+        if (board[row][column + 1] == symbol && board[row][column - 1] == symbol) {
             return true;
         }
     }
@@ -858,8 +887,45 @@ int main(void) {
     
     printBoard2(threeInARowGameState.board);
 
-    printf("HEURISTIC: expected 3 in a row: 7 \n");
-    heuristic(threeInARowGameState);
+    printf("HEURISTIC: expected 3 in a row: 7, score: %f \n", heuristic(threeInARowGameState));
+
+    // Test heuristic function
+    printf("TEST HEURISTIC FUNCTION 1 \n");
+    GameState heuristicGameState = (GameState){.turn = 0, .board = 0, .columnHeight = {5, 5, 5, 5, 5, 5, 5}, .valid = true};
+
+    for (i = 0; i < 6; i++) {
+        for (j = 0; j < 7; j++) {
+            heuristicGameState.board[i][j] = ' ';
+        }
+    }
+
+    heuristicGameState.board[5][0] = 'X';
+    heuristicGameState.board[4][0] = 'X';
+    heuristicGameState.board[3][0] = 'X';
+
+    printf("THREE IN A ROW: %i \n", threeInARow(threeInARowGameState.turn, threeInARowGameState.board, 0, 2));
+
+    heuristicGameState.board[5][1] = 'O';
+    heuristicGameState.board[5][2] = 'O';
+    heuristicGameState.board[4][1] = 'O';
+    heuristicGameState.board[4][2] = 'X';
+    heuristicGameState.board[3][1] = 'X';
+    heuristicGameState.board[3][2] = 'X';
+    
+    printBoard2(heuristicGameState.board);
+
+    printf("HEURISTIC: score: %f \n", heuristic(heuristicGameState));
+
+    printf("\n");
+    printf("TEST HEURISTIC FUNCTION 1 \n");
+
+    heuristicGameState.board[2][2] = 'O';
+    heuristicGameState.board[5][4] = 'O';
+    heuristicGameState.board[5][5] = 'O';
+
+    printBoard2(heuristicGameState.board);
+
+    printf("HEURISTIC: score: %f \n", heuristic(heuristicGameState));
 
     return 0;
 }
