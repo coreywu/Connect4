@@ -26,7 +26,7 @@ typedef struct {
 } Move;
 
 typedef struct {
-    int value;
+    double value;
     Move move;
 } AIMove;
 
@@ -142,14 +142,15 @@ void getSuccessors(GameState successors[7], GameState newGameState) {
 /**
  * Minimax algorithm implementation of AI.
  * AI's symbol is 'O' and turn is 1.
+ * If there is a winner/loser return a large number that should be larger
+ * than any possible value from maxValue/minValue.
  **/
 AIMove value(Turn turn, GameState gameState, int depth) {
     if (checkWinner(gameState.board) == 'O') {
-        AIMove aiMove = {.value = 1, .move = 0};
-        //printf("WINNER: OOOOOO %i \n", aiMove.value);
+        AIMove aiMove = {.value = 100, .move = 0};
         return aiMove;
     } else if (checkWinner(gameState.board) == 'X') {
-        AIMove aiMove = {.value = -1, .move = 0};
+        AIMove aiMove = {.value = -100, .move = 0};
         return aiMove;
     } else if (checkWinner(gameState.board) == '-') {
         AIMove aiMove = {.value = 0, .move = 0};
@@ -248,6 +249,11 @@ double heuristic(GameState gameState) {
     int agentThreeInARowCount = 0;
     int opponentThreeInARowCount = 0;
 
+    // Three in a rows that can be attainable on the next turn
+    // If there are 2 or more of these, it is a guaranteed win/loss
+    int agentAttainableThreeInARowCount = 0;
+    int opponentAttainableThreeInARowCount = 0;
+
     // Array of calues chosen to score threeInARows.
     // 0 three-in-a-rows is worth 0, 1 is worth 0.2, etc
     // Function increases quadradically to 3.5 then increases at a lesser 
@@ -261,10 +267,16 @@ double heuristic(GameState gameState) {
                 if (threeInARow(gameState.turn, gameState.board, i, j)) {
                     agentThreeInARowCount++;
                     agentThreeInARowBoard[i][j] = symbol;
+                    if (gameState.columnHeight[j] == i) {
+                        agentAttainableThreeInARowCount += 1;
+                    }
                 }
                 if (threeInARow(!gameState.turn, gameState.board, i, j)) {
                     opponentThreeInARowCount++;
                     opponentThreeInARowBoard[i][j] = opponentSymbol;
+                    if (gameState.columnHeight[j] == i) {
+                        opponentAttainableThreeInARowCount += 1;
+                    }
                 }
             }
         }
@@ -275,6 +287,18 @@ double heuristic(GameState gameState) {
     // TODO: determine when a win is guaranteed and ensure that the 
     // moves to achieve it are taken (certain 3 in a rows are 'attainable')
     int netThreeInARowCount = agentThreeInARowCount - opponentThreeInARowCount;
+    int netAttainableThreeInARowCount = agentAttainableThreeInARowCount - opponentAttainableThreeInARowCount;
+
+    printf("NET ATTAINABLE THREE IN A ROW COUNT: %i \n", netAttainableThreeInARowCount);
+
+    // guaranteed win/loss when the net attainable three in a row count is 
+    // two or more; return a number slightly less than a win/loss
+    if (netAttainableThreeInARowCount >= 2) {
+        return 99.9;
+    } else if (netAttainableThreeInARowCount <= -2) {
+        return -99.9;
+    }
+
     if (netThreeInARowCount < 0) {
         if (netThreeInARowCount < -7) {
             netThreeInARowCount = -7;
@@ -286,6 +310,7 @@ double heuristic(GameState gameState) {
         }
         score += threeInARowValues[netThreeInARowCount];
     }
+
     printf("NET THREE IN A ROW COUNT: %i \n", netThreeInARowCount);
 
     int agentTwoInARowCount = 0;
@@ -902,6 +927,7 @@ int main(void) {
     printf("HEURISTIC: expected 3 in a row: 7, score: %f \n", heuristic(threeInARowGameState));
 
     // Test heuristic function
+    printf("\n");
     printf("TEST HEURISTIC FUNCTION 1 \n");
     GameState heuristicGameState = (GameState){.turn = 0, .board = 0, .columnHeight = {5, 5, 5, 5, 5, 5, 5}, .valid = true};
 
@@ -926,7 +952,7 @@ int main(void) {
     printf("HEURISTIC: score: %f \n", heuristic(heuristicGameState));
 
     printf("\n");
-    printf("TEST HEURISTIC FUNCTION 1 \n");
+    printf("TEST HEURISTIC FUNCTION 2 \n");
 
     heuristicGameState.board[2][2] = 'O';
     heuristicGameState.board[5][4] = 'O';
@@ -934,6 +960,22 @@ int main(void) {
 
     printBoard2(heuristicGameState.board);
 
+    printf("HEURISTIC: score: %f \n", heuristic(heuristicGameState));
+
+    printf("\n");
+    printf("TEST HEURISTIC FUNCTION GUARANTEED WIN \n");
+
+    heuristicGameState.board[5][3] = 'X';
+    heuristicGameState.board[4][3] = 'X';
+
+    heuristicGameState.columnHeight[0] = 2;
+    heuristicGameState.columnHeight[1] = 2;
+    heuristicGameState.columnHeight[2] = 1;
+    heuristicGameState.columnHeight[3] = 3;
+    heuristicGameState.columnHeight[4] = 4;
+    heuristicGameState.columnHeight[5] = 4;
+
+    printBoard2(heuristicGameState.board);
     printf("HEURISTIC: score: %f \n", heuristic(heuristicGameState));
 
     return 0;
