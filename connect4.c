@@ -45,6 +45,7 @@ void getSuccessors(GameState[7], GameState);
 AIMove value(Turn, GameState, int);
 AIMove maxValue(GameState, int);
 AIMove minValue(GameState, int);
+double heuristic(GameState);
 
 int player1 = HUMAN;    // corresponds to turn 0
 int player2 = AI;
@@ -156,7 +157,9 @@ AIMove value(Turn turn, GameState gameState, int depth) {
         AIMove aiMove = {.value = 0, .move = 0};
         return aiMove;
     } else if (depth == 0) {
-        AIMove aiMove = {.value = 0, .move = 0};
+        double value = heuristic(gameState);
+        printf("VALUE? : %f \n", value);
+        AIMove aiMove = {.value = value, .move = move};
         return aiMove;
     } else {
         if (turn) {
@@ -203,6 +206,7 @@ AIMove maxValue(GameState gameState, int depth) {
             }
         }
     }
+    printf("MAX VALUE: %f, %i \n", aiMove.value, aiMove.move.column);
     return aiMove;
 }
 
@@ -282,14 +286,14 @@ double heuristic(GameState gameState) {
         }
     }
 
-    printf("AGENT THREE IN A ROW COUNT: %i \n", agentThreeInARowCount);
+    //printf("AGENT THREE IN A ROW COUNT: %i \n", agentThreeInARowCount);
 
     // TODO: determine when a win is guaranteed and ensure that the 
     // moves to achieve it are taken (certain 3 in a rows are 'attainable')
     int netThreeInARowCount = agentThreeInARowCount - opponentThreeInARowCount;
     int netAttainableThreeInARowCount = agentAttainableThreeInARowCount - opponentAttainableThreeInARowCount;
 
-    printf("NET ATTAINABLE THREE IN A ROW COUNT: %i \n", netAttainableThreeInARowCount);
+    //printf("NET ATTAINABLE THREE IN A ROW COUNT: %i \n", netAttainableThreeInARowCount);
 
     // guaranteed win/loss when the net attainable three in a row count is 
     // two or more; return a number slightly less than a win/loss
@@ -311,7 +315,7 @@ double heuristic(GameState gameState) {
         score += threeInARowValues[netThreeInARowCount];
     }
 
-    printf("NET THREE IN A ROW COUNT: %i \n", netThreeInARowCount);
+    //printf("NET THREE IN A ROW COUNT: %i \n", netThreeInARowCount);
 
     int agentTwoInARowCount = 0;
     int opponentTwoInARowCount = 0;
@@ -336,7 +340,7 @@ double heuristic(GameState gameState) {
         }
     }
 
-    printf("AGENT TWO IN A ROW COUNT: %i \n", agentTwoInARowCount);
+    //printf("AGENT TWO IN A ROW COUNT: %i \n", agentTwoInARowCount);
 
     int netTwoInARowCount = agentTwoInARowCount - opponentTwoInARowCount;
     if (netTwoInARowCount < 0) {
@@ -350,7 +354,7 @@ double heuristic(GameState gameState) {
         }
         score += twoInARowValues[netTwoInARowCount];
     }
-    printf("NET TWO IN A ROW COUNT: %i \n", netTwoInARowCount);
+    //printf("NET TWO IN A ROW COUNT: %i \n", netTwoInARowCount);
 
     return score;
 }
@@ -901,8 +905,9 @@ int main(void) {
     printf("TEST VALUE: \n");
     printBoard2(valueTestGameState.board);
     printf("WINNER %c \n", checkWinner(valueTestGameState.board));
-    printf("VALUE: %i, COLUMN: %i, SYMBOL: %c \n", aiMove.value, aiMove.move.column, aiMove.move.symbol);
+    printf("VALUE: %f, COLUMN: %i, SYMBOL: %c \n", aiMove.value, aiMove.move.column, aiMove.move.symbol);
 
+    /*
     // Test threeInARow function
     GameState threeInARowGameState = (GameState){.turn = 0, .board = 0, .columnHeight = {5, 5, 5, 5, 5, 5, 5}, .valid = true};
 
@@ -977,6 +982,7 @@ int main(void) {
 
     printBoard2(heuristicGameState.board);
     printf("HEURISTIC: score: %f \n", heuristic(heuristicGameState));
+    */
 
     return 0;
 }
