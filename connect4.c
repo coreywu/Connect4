@@ -159,7 +159,7 @@ AIMove value(Turn turn, GameState gameState, int depth) {
     } else if (depth == 0) {
         double value = heuristic(gameState);
         printf("VALUE? : %f \n", value);
-        AIMove aiMove = {.value = value, .move = move};
+        AIMove aiMove = {.value = value, .move = 0};
         return aiMove;
     } else {
         if (turn) {
@@ -901,11 +901,15 @@ int main(void) {
     valueTestGameState.columnHeight[1] = 4;
     valueTestGameState.columnHeight[2] = 4;
  
-    AIMove aiMove = value(1, valueTestGameState, 1);   
-    printf("TEST VALUE: \n");
     printBoard2(valueTestGameState.board);
+    AIMove aiMove = value(1, valueTestGameState, 1);   
+    printf("\n");
+    printf("TEST VALUE: \n");
     printf("WINNER %c \n", checkWinner(valueTestGameState.board));
-    printf("VALUE: %f, COLUMN: %i, SYMBOL: %c \n", aiMove.value, aiMove.move.column, aiMove.move.symbol);
+    printf("VALUE OF X: %f, COLUMN: %i, SYMBOL: %c \n", aiMove.value, aiMove.move.column, aiMove.move.symbol);
+
+    AIMove aiMove2 = value(0, valueTestGameState, 1);   
+    printf("VALUE OF O: %f, COLUMN: %i, SYMBOL: %c \n", aiMove2.value, aiMove2.move.column, aiMove2.move.symbol);
 
     /*
     // Test threeInARow function
