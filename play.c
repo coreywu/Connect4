@@ -312,22 +312,23 @@ int main(void) {
         }
     }
 
-    valueTestGameState.board[5][0] = 'O';
-    valueTestGameState.board[5][1] = 'O';
-    valueTestGameState.board[5][2] = 'O';
+    valueTestGameState.board[5][0] = 'X';
+    valueTestGameState.board[5][1] = 'X';
+    valueTestGameState.board[5][2] = 'X';
     valueTestGameState.columnHeight[0] = 4;
     valueTestGameState.columnHeight[1] = 4;
     valueTestGameState.columnHeight[2] = 4;
  
     printBoard2(valueTestGameState.board);
-    AIMove aiMove = value(1, valueTestGameState, 1);   
+    valueTestGameState.turn = 0;
+    AIMove aiMove = value(valueTestGameState, 1);   
     printf("\n");
     printf("TEST VALUE: \n");
-    printf("WINNER %c \n", checkWinner(valueTestGameState.board));
-    printf("VALUE OF X: %f, COLUMN: %i, SYMBOL: %c \n", aiMove.value, aiMove.move.column, aiMove.move.symbol);
+    printf("VALUE OF X IF IT IS X'S TURN: %f, COLUMN: %i, SYMBOL: %c \n", aiMove.value, aiMove.move.column, aiMove.move.symbol);
 
-    AIMove aiMove2 = value(0, valueTestGameState, 1);   
-    printf("VALUE OF O: %f, COLUMN: %i, SYMBOL: %c \n", aiMove2.value, aiMove2.move.column, aiMove2.move.symbol);
+    valueTestGameState.turn = 1;
+    AIMove aiMove2 = value(valueTestGameState, 1);   
+    printf("VALUE OF X IF IT IS O's TURN: %f, COLUMN: %i, SYMBOL: %c \n", aiMove2.value, aiMove2.move.column, aiMove2.move.symbol);
 
     /*
     // Test threeInARow function

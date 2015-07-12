@@ -42,10 +42,13 @@ void printBoard2(char[6][7]);
 char checkWinner();
 
 void getSuccessors(GameState[7], GameState);
-AIMove value(Turn, GameState, int);
+AIMove value(GameState, int);
 AIMove maxValue(GameState, int);
 AIMove minValue(GameState, int);
 double heuristic(GameState);
+
+int threeInARow(char, char[6][7], int, int);
+int twoInARow(char, char[6][7], int, int);
 
 int player1 = HUMAN;    // corresponds to turn 0
 int player2 = AI;

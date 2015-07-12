@@ -81,24 +81,24 @@ void getSuccessors(GameState successors[7], GameState newGameState) {
         if (newGameState.board[0][i] != ' ') {
 	        successors[i].valid = false;
 	    } else {
-            successors[i].turn = !successors[i].turn;
             Move move = {getSymbol(successors[i].turn), i};
             performMoveOn(&successors[i], move);
+            successors[i].turn = !successors[i].turn;
         }
     }
 }
 
 /**
- * Minimax algorithm implementation of AI.
- * AI's symbol is 'O' and turn is 1.
+ * Minimax algorithm implementation of AI. The value calculated is the value
+ * of X. Positive values indicate that X is in a better position.
  * If there is a winner/loser return a large number that should be larger
  * than any possible value from maxValue/minValue.
  **/
-AIMove value(Turn turn, GameState gameState, int depth) {
-    if (checkWinner(gameState.board) == 'O') {
+AIMove value(GameState gameState, int depth) {
+    if (checkWinner(gameState.board) == 'X') {
         AIMove aiMove = {.value = 100, .move = 0};
         return aiMove;
-    } else if (checkWinner(gameState.board) == 'X') {
+    } else if (checkWinner(gameState.board) == 'O') {
         AIMove aiMove = {.value = -100, .move = 0};
         return aiMove;
     } else if (checkWinner(gameState.board) == '-') {
@@ -110,7 +110,7 @@ AIMove value(Turn turn, GameState gameState, int depth) {
         AIMove aiMove = {.value = value, .move = 0};
         return aiMove;
     } else {
-        if (turn) {
+        if (!gameState.turn) {
             return maxValue(gameState, depth);
         } else {
             return minValue(gameState, depth);
@@ -147,7 +147,7 @@ AIMove maxValue(GameState gameState, int depth) {
 
     for (i = 0; i < 7; i++) {
         if (successors[i].valid == true) {
-            successorMove = value(0, successors[i], depth - 1);
+            successorMove = value(successors[i], depth - 1);
             if (successorMove.value > aiMove.value) {
                 aiMove = successorMove;
                 aiMove.move.column = i;
@@ -166,21 +166,26 @@ AIMove minValue(GameState gameState, int depth) {
     getSuccessors(successors, gameState);
     for (i = 0; i < 7; i++) {
         if (successors[i].valid == true) {
-            successorMove = value(1, successors[i], depth - 1);
+            successorMove = value(successors[i], depth - 1);
             if (successorMove.value < aiMove.value) {
                 aiMove = successorMove;
                 aiMove.move.column = i;
             }
         }
     }
+    printf("MIN VALUE: %f, %i \n", aiMove.value, aiMove.move.column);
     return aiMove;
 }
 
 double heuristic(GameState gameState) {
     int i, j;
     double score = 0;
+    /*
     char symbol = getSymbol(gameState.turn);
     char opponentSymbol = getSymbol(!gameState.turn);
+    */
+    char agentSymbol = 'X';
+    char opponentSymbol = 'O';
     // check for guaranteed winning scenarios
     // check for 3 in a rows (agent and opponent)
     // check for 2 in a rows (agent and opponent)
@@ -216,14 +221,14 @@ double heuristic(GameState gameState) {
     for (i = 0; i < 6; i++) {
         for (j = 0; j < 7; j++) {
             if (gameState.board[i][j] == ' ') {
-                if (threeInARow(gameState.turn, gameState.board, i, j)) {
+                if (threeInARow(agentSymbol, gameState.board, i, j)) {
                     agentThreeInARowCount++;
-                    agentThreeInARowBoard[i][j] = symbol;
+                    agentThreeInARowBoard[i][j] = agentSymbol;
                     if (gameState.columnHeight[j] == i) {
                         agentAttainableThreeInARowCount += 1;
                     }
                 }
-                if (threeInARow(!gameState.turn, gameState.board, i, j)) {
+                if (threeInARow(opponentSymbol, gameState.board, i, j)) {
                     opponentThreeInARowCount++;
                     opponentThreeInARowBoard[i][j] = opponentSymbol;
                     if (gameState.columnHeight[j] == i) {
@@ -278,10 +283,10 @@ double heuristic(GameState gameState) {
     for (i = 0; i < 6; i++) {
         for (j = 0; j < 7; j++) {
             if (gameState.board[i][j] == ' ') {
-                if (agentThreeInARowBoard[i][j] == ' ' && twoInARow(gameState.turn, gameState.board, i, j)) {
+                if (agentThreeInARowBoard[i][j] == ' ' && twoInARow(agentSymbol, gameState.board, i, j)) {
                     agentTwoInARowCount++;
                 }
-                if (opponentThreeInARowBoard[i][j] == ' ' && twoInARow(!gameState.turn, gameState.board, i, j)) {
+                if (opponentThreeInARowBoard[i][j] == ' ' && twoInARow(opponentSymbol, gameState.board, i, j)) {
                     opponentTwoInARowCount++;
                 }
             }
@@ -309,9 +314,7 @@ double heuristic(GameState gameState) {
 
 // Returns whether there is three in a row adjacent to the current position 
 // Takes symbol, the board, and the position (row and column)
-int threeInARow(int turn, char board[6][7], int row, int column) {
-    char symbol = getSymbol(turn);
-
+int threeInARow(char symbol, char board[6][7], int row, int column) {
     // down
     if (row < 3) {
         if (board[row + 1][column] == symbol && board[row + 2][column] == symbol&& board[row + 3][column] == symbol) {
@@ -366,9 +369,7 @@ int threeInARow(int turn, char board[6][7], int row, int column) {
 
 // Returns whether there is two in a row adjacent to the current position 
 // Takes symbol, the board, and the position (row and column)
-int twoInARow(int turn, char board[6][7], int row, int column) {
-    char symbol = getSymbol(turn);
-
+int twoInARow(char symbol, char board[6][7], int row, int column) {
     // down
     if (row < 4) {
         if (board[row + 1][column] == symbol && board[row + 2][column] == symbol) {
