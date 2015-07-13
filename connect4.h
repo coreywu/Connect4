@@ -35,6 +35,7 @@ Move getHumanMove();
 Move getAIMove();
 void performMove(Move);
 void performMoveOn(GameState*, Move);
+void performMoveOnExplicit(GameState*, int, char);
 
 char getSymbol();
 void printBoard();

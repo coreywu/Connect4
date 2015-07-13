@@ -425,6 +425,11 @@ void performMoveOn(GameState *newGameState, Move move) {
     (*newGameState).columnHeight[move.column] = (*newGameState).columnHeight[move.column] - 1;
 }
 
+void performMoveOnExplicit(GameState *newGameState, int column, char symbol) {
+    (*newGameState).board[(*newGameState).columnHeight[column]][column] = symbol;
+    (*newGameState).columnHeight[column] = (*newGameState).columnHeight[column] - 1;
+}
+
 char getSymbol(Turn turn) {
     char symbol = 0;
     if (turn) {
