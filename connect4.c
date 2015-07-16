@@ -32,6 +32,39 @@ void playGame() {
         gameState.turn = !gameState.turn;
     }
 }
+
+bool gameStateEquals(GameState gameState1, GameState gameState2) {
+    printf("EQUALS: TURN: %i", gameState1.turn == gameState2.turn);
+    printf("EQUALS: BOARD: %i", boardEquals(gameState1.board, gameState2.board));
+    printf("EQUALS: CH: %i", columnHeightEquals(gameState1.columnHeight, gameState2.columnHeight));
+    printf("EQUALS: VALID: %i", gameState1.valid == gameState2.valid);
+    return gameState1.turn == gameState2.turn
+        && boardEquals(gameState1.board, gameState2.board)
+        && columnHeightEquals(gameState1.columnHeight, gameState2.columnHeight)
+        && gameState1.valid == gameState2.valid;
+}
+
+bool boardEquals(char board1[6][7], char board2[6][7]) {
+    int i, j;
+    for (i = 0; i < 7; i++) {
+        for (j = 0; j < 6; j++) {
+            if (board1[i][j] != board2[i][j]) {
+                return false;
+            }   
+        }
+    }
+    return true;
+}
+
+bool columnHeightEquals(char columnHeight1[7], char columnHeight2[7]) {
+    int i;
+    for (i = 0; i < 7; i++) {
+        if (columnHeight1[i] != columnHeight2[i]) {
+            return false;
+        }   
+    }
+    return true;
+}
     
 Move getMove(int playerNum) {
     Move move;
