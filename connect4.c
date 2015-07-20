@@ -34,10 +34,12 @@ void playGame() {
 }
 
 bool gameStateEquals(GameState gameState1, GameState gameState2) {
-    printf("EQUALS: TURN: %i", gameState1.turn == gameState2.turn);
-    printf("EQUALS: BOARD: %i", boardEquals(gameState1.board, gameState2.board));
-    printf("EQUALS: CH: %i", columnHeightEquals(gameState1.columnHeight, gameState2.columnHeight));
-    printf("EQUALS: VALID: %i", gameState1.valid == gameState2.valid);
+    /*
+    printf("EQUALS TURN: %i \n", gameState1.turn == gameState2.turn);
+    printf("EQUALS BOARD: %i \n", boardEquals(gameState1.board, gameState2.board));
+    printf("EQUALS COLUMNHEIGHTS: %i \n", columnHeightEquals(gameState1.columnHeight, gameState2.columnHeight));
+    printf("EQUALS VALID: %i \n", gameState1.valid == gameState2.valid);
+    */
     return gameState1.turn == gameState2.turn
         && boardEquals(gameState1.board, gameState2.board)
         && columnHeightEquals(gameState1.columnHeight, gameState2.columnHeight)
@@ -46,9 +48,10 @@ bool gameStateEquals(GameState gameState1, GameState gameState2) {
 
 bool boardEquals(char board1[6][7], char board2[6][7]) {
     int i, j;
-    for (i = 0; i < 7; i++) {
-        for (j = 0; j < 6; j++) {
+    for (i = 0; i < 6; i++) {
+        for (j = 0; j < 7; j++) {
             if (board1[i][j] != board2[i][j]) {
+                //printf("NOT EQUALS: row: %i, col: %i, 1: %i, 2: %i \n", i, j, board1[i][j],board2[i][j]);
                 return false;
             }   
         }
@@ -60,6 +63,7 @@ bool columnHeightEquals(char columnHeight1[7], char columnHeight2[7]) {
     int i;
     for (i = 0; i < 7; i++) {
         if (columnHeight1[i] != columnHeight2[i]) {
+            //printf("NOT EQUALS: col: %i, 1: %i, 2: %i \n", i, columnHeight1[i], columnHeight2[i]);
             return false;
         }   
     }
@@ -139,7 +143,6 @@ AIMove value(GameState gameState, int depth) {
         return aiMove;
     } else if (depth == 0) {
         double value = heuristic(gameState);
-        printf("VALUE? : %f \n", value);
         AIMove aiMove = {.value = value, .move = 0};
         return aiMove;
     } else {
@@ -449,18 +452,24 @@ int twoInARow(char symbol, char board[6][7], int row, int column) {
 }
 
 void performMove(Move move) {
-    gameState.board[gameState.columnHeight[move.column]][move.column] = move.symbol;
-    gameState.columnHeight[move.column] = gameState.columnHeight[move.column] - 1; 
+    if (gameState.columnHeight[move.column] > -1) {
+        gameState.board[gameState.columnHeight[move.column]][move.column] = move.symbol;
+        gameState.columnHeight[move.column] = gameState.columnHeight[move.column] - 1; 
+    }
 }
 
 void performMoveOn(GameState *newGameState, Move move) {
-    (*newGameState).board[(*newGameState).columnHeight[move.column]][move.column] = move.symbol;
-    (*newGameState).columnHeight[move.column] = (*newGameState).columnHeight[move.column] - 1;
+    if ((*newGameState).columnHeight[move.column] > -1) {
+        (*newGameState).board[(*newGameState).columnHeight[move.column]][move.column] = move.symbol;
+        (*newGameState).columnHeight[move.column] = (*newGameState).columnHeight[move.column] - 1;
+    }
 }
 
 void performMoveOnExplicit(GameState *newGameState, int column, char symbol) {
-    (*newGameState).board[(*newGameState).columnHeight[column]][column] = symbol;
-    (*newGameState).columnHeight[column] = (*newGameState).columnHeight[column] - 1;
+    if ((*newGameState).columnHeight[column] > -1) {
+        (*newGameState).board[(*newGameState).columnHeight[column]][column] = symbol;
+        (*newGameState).columnHeight[column] = (*newGameState).columnHeight[column] - 1;
+    }
 }
 
 char getSymbol(Turn turn) {

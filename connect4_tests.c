@@ -180,49 +180,50 @@ MU_TEST(test_getSuccessors) {
     // Test successors of empty board
     getSuccessors(successors, successorsTestGameState);
 
-    performMoveOnExplicit(&expectedGameState, 0, 'X');
     expectedGameState.turn = 1;
+
+    performMoveOnExplicit(&expectedGameState, 0, 'X');
     mu_check(gameStateEquals(successors[0], expectedGameState));
 
     expectedGameState.board[5][0] = ' ';
     expectedGameState.columnHeight[0] = 5;
+
     performMoveOnExplicit(&expectedGameState, 1, 'X');
-    expectedGameState.turn = 1;
-    printBoard2(expectedGameState.board);
     mu_check(gameStateEquals(successors[1], expectedGameState));
 
     expectedGameState.board[5][1] = ' ';
     expectedGameState.columnHeight[1] = 5;
+
     performMoveOnExplicit(&expectedGameState, 2, 'X');
-    expectedGameState.turn = 1;
     mu_check(gameStateEquals(successors[2], expectedGameState));
 
     expectedGameState.board[5][2] = ' ';
     expectedGameState.columnHeight[2] = 5;
+
     performMoveOnExplicit(&expectedGameState, 3, 'X');
-    expectedGameState.turn = 1;
     mu_check(gameStateEquals(successors[3], expectedGameState));
 
     expectedGameState.board[5][3] = ' ';
     expectedGameState.columnHeight[3] = 5;
+
     performMoveOnExplicit(&expectedGameState, 4, 'X');
-    expectedGameState.turn = 1;
     mu_check(gameStateEquals(successors[4], expectedGameState));
 
     expectedGameState.board[5][4] = ' ';
     expectedGameState.columnHeight[4] = 5;
+
     performMoveOnExplicit(&expectedGameState, 5, 'X');
-    expectedGameState.turn = 1;
     mu_check(gameStateEquals(successors[5], expectedGameState));
 
     expectedGameState.board[5][5] = ' ';
     expectedGameState.columnHeight[5] = 5;
-    performMoveOnExplicit(&expectedGameState, 6, 'X');
-    expectedGameState.turn = 1;
-    mu_check(gameStateEquals(successors[6], expectedGameState));
-}
 
-/*
+    performMoveOnExplicit(&expectedGameState, 6, 'X');
+    mu_check(gameStateEquals(successors[6], expectedGameState));
+
+    expectedGameState.board[5][6] = ' ';
+    expectedGameState.columnHeight[6] = 5;
+}
 
 MU_TEST(test_getSuccessors2) {
     successorsTestGameState.board[5][0] = 'X';
@@ -240,39 +241,67 @@ MU_TEST(test_getSuccessors2) {
     successorsTestGameState.board[5][6] = 'X';
     successorsTestGameState.columnHeight[6] = 4;
 
+    expectedGameState.board[5][0] = 'X';
+    expectedGameState.columnHeight[0] = 4;
+    expectedGameState.board[5][1] = 'O';
+    expectedGameState.columnHeight[1] = 4;
+    expectedGameState.board[5][2] = 'X';
+    expectedGameState.columnHeight[2] = 4;
+    expectedGameState.board[5][3] = 'O';
+    expectedGameState.columnHeight[3] = 4;
+    expectedGameState.board[5][4] = 'X';
+    expectedGameState.columnHeight[4] = 4;
+    expectedGameState.board[5][5] = 'O';
+    expectedGameState.columnHeight[5] = 4;
+    expectedGameState.board[5][6] = 'X';
+    expectedGameState.columnHeight[6] = 4;
+
     // Test successors of board with 1 symbol in each column
     getSuccessors(successors, successorsTestGameState);
 
-    printf("Board game state: \n");
-    printBoard2(successorsTestGameState.board);
+    expectedGameState.turn = 1;
 
-    printf("Empty board successor[0] game state: \n");
-    printBoard2(successors[0].board);
-    printf("\n");
+    performMoveOnExplicit(&expectedGameState, 0, 'X');
+    mu_check(gameStateEquals(successors[0], expectedGameState));
 
-    printf("Empty board successor[1] game state: \n");
-    printBoard2(successors[1].board);
-    printf("\n");
+    expectedGameState.board[4][0] = ' ';
+    expectedGameState.columnHeight[0] = 4;
 
-    printf("Empty board successor[2] game state: \n");
-    printBoard2(successors[2].board);
-    printf("\n");
+    performMoveOnExplicit(&expectedGameState, 1, 'X');
+    mu_check(gameStateEquals(successors[1], expectedGameState));
 
-    printf("Empty board successor[3] game state: \n");
-    printBoard2(successors[3].board);
-    printf("\n");
+    expectedGameState.board[4][1] = ' ';
+    expectedGameState.columnHeight[1] = 4;
 
-    printf("Empty board successor[4] game state: \n");
-    printBoard2(successors[4].board);
-    printf("\n");
+    performMoveOnExplicit(&expectedGameState, 2, 'X');
+    mu_check(gameStateEquals(successors[2], expectedGameState));
 
-    printf("Empty board successor[5] game state: \n");
-    printBoard2(successors[5].board);
-    printf("\n");
+    expectedGameState.board[4][2] = ' ';
+    expectedGameState.columnHeight[2] = 4;
 
-    printf("Empty board successor[6] game state: \n");
-    printBoard2(successors[6].board);
-    printf("\n");
+    performMoveOnExplicit(&expectedGameState, 3, 'X');
+    mu_check(gameStateEquals(successors[3], expectedGameState));
+
+    expectedGameState.board[4][3] = ' ';
+    expectedGameState.columnHeight[3] = 4;
+
+    performMoveOnExplicit(&expectedGameState, 4, 'X');
+    mu_check(gameStateEquals(successors[4], expectedGameState));
+
+    expectedGameState.board[4][4] = ' ';
+    expectedGameState.columnHeight[4] = 4;
+
+    performMoveOnExplicit(&expectedGameState, 5, 'X');
+    mu_check(gameStateEquals(successors[5], expectedGameState));
+
+    expectedGameState.board[4][5] = ' ';
+    expectedGameState.columnHeight[5] = 4;
+
+    performMoveOnExplicit(&expectedGameState, 6, 'X');
+    mu_check(gameStateEquals(successors[6], expectedGameState));
+
+    expectedGameState.board[4][6] = ' ';
+    expectedGameState.columnHeight[6] = 4;
 }
 
 MU_TEST(test_getSuccessors3) {
@@ -301,48 +330,100 @@ MU_TEST(test_getSuccessors3) {
     successorsTestGameState.board[0][0] = 'O';
     successorsTestGameState.board[0][1] = 'O';
 
-    successorsTestGameState.columnHeight[0] = 0;
-    successorsTestGameState.columnHeight[1] = 0;
+    successorsTestGameState.columnHeight[0] = -1;
+    successorsTestGameState.columnHeight[1] = -1;
     successorsTestGameState.columnHeight[2] = 0;
     successorsTestGameState.columnHeight[3] = 1;
     successorsTestGameState.columnHeight[4] = 2;
     successorsTestGameState.columnHeight[5] = 3;
 
+    expectedGameState.board[4][0] = 'O';
+    expectedGameState.board[4][1] = 'O';
+    expectedGameState.board[4][2] = 'X';
+    expectedGameState.board[4][3] = 'X';
+    expectedGameState.board[4][4] = 'O';
+    expectedGameState.board[4][5] = 'O';
+
+    expectedGameState.board[3][0] = 'X';
+    expectedGameState.board[3][1] = 'X';
+    expectedGameState.board[3][2] = 'O';
+    expectedGameState.board[3][3] = 'X';
+    expectedGameState.board[3][4] = 'X';
+
+    expectedGameState.board[2][0] = 'O';
+    expectedGameState.board[2][1] = 'X';
+    expectedGameState.board[2][2] = 'O';
+    expectedGameState.board[2][3] = 'X';
+
+    expectedGameState.board[1][0] = 'X';
+    expectedGameState.board[1][1] = 'O';
+    expectedGameState.board[1][2] = 'X';
+
+    expectedGameState.board[0][0] = 'O';
+    expectedGameState.board[0][1] = 'O';
+
+    expectedGameState.columnHeight[0] = -1;
+    expectedGameState.columnHeight[1] = -1;
+    expectedGameState.columnHeight[2] = 0;
+    expectedGameState.columnHeight[3] = 1;
+    expectedGameState.columnHeight[4] = 2;
+    expectedGameState.columnHeight[5] = 3;
+
     // Test successors with varying column heights
     getSuccessors(successors, successorsTestGameState);
 
-    printf("Board game state: \n");
-    printBoard2(successorsTestGameState.board);
+    // turn is still 0 because successor is invalid
+    expectedGameState.turn = 0;
+    expectedGameState.valid = 0;
+    performMoveOnExplicit(&expectedGameState, 0, 'X');
+    mu_check(gameStateEquals(successors[0], expectedGameState));
 
-    printf("Empty board successor[0] game state: valid: %i \n", successors[0].valid);
-    printBoard2(successors[0].board);
-    printf("\n");
+    // turn is still 0 because successor is invalid
+    expectedGameState.turn = 0;
+    expectedGameState.valid = 0;
+    performMoveOnExplicit(&expectedGameState, 1, 'X');
+    mu_check(gameStateEquals(successors[1], expectedGameState));
 
-    printf("Empty board successor[1] game state: valid: %i \n", successors[1].valid);
-    printBoard2(successors[1].board);
-    printf("\n");
+    expectedGameState.turn = 1;
+    expectedGameState.valid = 1;
+    performMoveOnExplicit(&expectedGameState, 2, 'X');
+    mu_check(gameStateEquals(successors[2], expectedGameState));
 
-    printf("Empty board successor[2] game state: valid: %i \n", successors[2].valid);
-    printBoard2(successors[2].board);
-    printf("\n");
+    expectedGameState.board[0][2] = ' ';
+    expectedGameState.columnHeight[2] = 0;
 
-    printf("Empty board successor[3] game state: valid: %i \n", successors[3].valid);
-    printBoard2(successors[3].board);
-    printf("\n");
+    expectedGameState.turn = 1;
+    expectedGameState.valid = 1;
+    performMoveOnExplicit(&expectedGameState, 3, 'X');
+    mu_check(gameStateEquals(successors[3], expectedGameState));
 
-    printf("Empty board successor[4] game state: valid: %i \n", successors[4].valid);
-    printBoard2(successors[4].board);
-    printf("\n");
+    expectedGameState.board[1][3] = ' ';
+    expectedGameState.columnHeight[3] = 1;
 
-    printf("Empty board successor[5] game state: valid: %i \n", successors[5].valid);
-    printBoard2(successors[5].board);
-    printf("\n");
+    expectedGameState.turn = 1;
+    expectedGameState.valid = 1;
+    performMoveOnExplicit(&expectedGameState, 4, 'X');
+    mu_check(gameStateEquals(successors[4], expectedGameState));
 
-    printf("Empty board successor[6] game state: valid: %i \n", successors[6].valid);
-    printBoard2(successors[6].board);
-    printf("\n");
+    expectedGameState.board[2][4] = ' ';
+    expectedGameState.columnHeight[4] = 2;
+
+    expectedGameState.turn = 1;
+    expectedGameState.valid = 1;
+    performMoveOnExplicit(&expectedGameState, 5, 'X');
+    mu_check(gameStateEquals(successors[5], expectedGameState));
+
+    expectedGameState.board[3][5] = ' ';
+    expectedGameState.columnHeight[5] = 3;
+
+    expectedGameState.turn = 1;
+    expectedGameState.valid = 1;
+    performMoveOnExplicit(&expectedGameState, 6, 'X');
+    mu_check(gameStateEquals(successors[6], expectedGameState));
+
+    expectedGameState.board[4][6] = ' ';
+    expectedGameState.columnHeight[6] = 4;
 }
-*/
 
 MU_TEST(test_value) {
     int i, j;
@@ -469,10 +550,8 @@ MU_TEST_SUITE(test_suite) {
     MU_RUN_TEST(test_checkWinnerDrawBoard2);
     MU_RUN_TEST(test_gameStateEquals);
     MU_RUN_TEST(test_getSuccessors);
-    /*
     MU_RUN_TEST(test_getSuccessors2);
     MU_RUN_TEST(test_getSuccessors3);
-    */
     /*
     MU_RUN_TEST(test_value);
     MU_RUN_TEST(test_threeInARow);
