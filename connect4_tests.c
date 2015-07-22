@@ -427,7 +427,7 @@ MU_TEST(test_getSuccessors3) {
 
 MU_TEST(test_value) {
     int i, j;
-    // Test value
+    // Test value of a game winning move
     GameState valueTestGameState = (GameState){.turn = 0, .board = 0, .columnHeight = {5, 5, 5, 5, 5, 5, 5}, .valid = true};
 
     for (i = 0; i < 6; i++) {
@@ -443,17 +443,12 @@ MU_TEST(test_value) {
     valueTestGameState.columnHeight[1] = 4;
     valueTestGameState.columnHeight[2] = 4;
  
-    printBoard2(valueTestGameState.board);
     valueTestGameState.turn = 0;
     AIMove aiMove = value(valueTestGameState, 1);   
-    printf("\n");
-    printf("TEST VALUE: \n");
-    printf("VALUE OF X IF IT IS X'S TURN: %f, COLUMN: %i, SYMBOL: %c \n", aiMove.value, aiMove.move.column, aiMove.move.symbol);
     mu_check(aiMove.value == 100);
 
     valueTestGameState.turn = 1;
     AIMove aiMove2 = value(valueTestGameState, 1);   
-    printf("VALUE OF X IF IT IS O's TURN: %f, COLUMN: %i, SYMBOL: %c \n", aiMove2.value, aiMove2.move.column, aiMove2.move.symbol);
     mu_check(aiMove2.value == 0);
 }
 
@@ -478,10 +473,48 @@ MU_TEST(test_threeInARow) {
     threeInARowGameState.board[3][1] = 'X';
     threeInARowGameState.board[3][2] = 'X';
     
-    printBoard2(threeInARowGameState.board);
+    // Valid threeInARow positions
+    mu_check(threeInARow('X', threeInARowGameState.board, 2, 0) == true);
+    mu_check(threeInARow('X', threeInARowGameState.board, 2, 1) == true);
+    mu_check(threeInARow('X', threeInARowGameState.board, 2, 2) == true);
+    mu_check(threeInARow('X', threeInARowGameState.board, 2, 3) == true);
+    mu_check(threeInARow('X', threeInARowGameState.board, 3, 3) == true);
+    mu_check(threeInARow('X', threeInARowGameState.board, 4, 3) == true);
+    mu_check(threeInARow('X', threeInARowGameState.board, 5, 3) == true);
 
-    printf("HEURISTIC: expected 3 in a row: 7, score: %f \n", heuristic(threeInARowGameState));
-    //mu_check(heuristic(threeInARowGameState) == 0);
+    // Invalid threeInARow positions (outside)
+    mu_check(threeInARow('X', threeInARowGameState.board, 1, 0) == false);
+    mu_check(threeInARow('X', threeInARowGameState.board, 1, 1) == false);
+    mu_check(threeInARow('X', threeInARowGameState.board, 1, 2) == false);
+    mu_check(threeInARow('X', threeInARowGameState.board, 1, 3) == false);
+    mu_check(threeInARow('X', threeInARowGameState.board, 1, 4) == false);
+    mu_check(threeInARow('X', threeInARowGameState.board, 2, 4) == false);
+    mu_check(threeInARow('X', threeInARowGameState.board, 3, 4) == false);
+    mu_check(threeInARow('X', threeInARowGameState.board, 4, 4) == false);
+    mu_check(threeInARow('X', threeInARowGameState.board, 5, 4) == false);
+
+    // TwoInARows are in the same positions as threeInARows
+    mu_check(twoInARow('X', threeInARowGameState.board, 2, 0) == true);
+    mu_check(twoInARow('X', threeInARowGameState.board, 2, 1) == true);
+    mu_check(twoInARow('X', threeInARowGameState.board, 2, 2) == true);
+    mu_check(twoInARow('X', threeInARowGameState.board, 2, 3) == true);
+    mu_check(twoInARow('X', threeInARowGameState.board, 3, 3) == true);
+    mu_check(twoInARow('X', threeInARowGameState.board, 4, 3) == true);
+    mu_check(twoInARow('X', threeInARowGameState.board, 5, 3) == true);
+
+    mu_check(twoInARow('X', threeInARowGameState.board, 1, 0) == false);
+    mu_check(twoInARow('X', threeInARowGameState.board, 1, 1) == false);
+    mu_check(twoInARow('X', threeInARowGameState.board, 1, 2) == false);
+    mu_check(twoInARow('X', threeInARowGameState.board, 1, 3) == false);
+    mu_check(twoInARow('X', threeInARowGameState.board, 1, 4) == false);
+    mu_check(twoInARow('X', threeInARowGameState.board, 2, 4) == false);
+    mu_check(twoInARow('X', threeInARowGameState.board, 3, 4) == false);
+    mu_check(twoInARow('X', threeInARowGameState.board, 4, 4) == false);
+    mu_check(twoInARow('X', threeInARowGameState.board, 5, 4) == false);
+
+    // Value of 1.45 due to a net threeInARowCount of 7 (no additional
+    // value from twoInARows because they are all part of the threeInARows
+    mu_check(heuristic(threeInARowGameState) == 1.45);
 }
 
 GameState heuristicGameState;
@@ -506,10 +539,9 @@ MU_TEST(test_heuristic) {
     heuristicGameState.board[3][1] = 'X';
     heuristicGameState.board[3][2] = 'X';
     
-    printBoard2(heuristicGameState.board);
-
-    printf("HEURISTIC: score: %f \n", heuristic(heuristicGameState));
-    //mu_check(heuristic(heuristicGameState) == 100);
+    // Score is 0.5 (agent3 = 2, opponent3 = 0, agent2 = 2, opponent2 = 1)
+    // net3 -> 0.4, net2 -> 0.1
+    mu_check(heuristic(heuristicGameState) == 0.5);
 }
 
 MU_TEST(test_heuristic2) {
@@ -552,10 +584,12 @@ MU_TEST_SUITE(test_suite) {
     MU_RUN_TEST(test_getSuccessors);
     MU_RUN_TEST(test_getSuccessors2);
     MU_RUN_TEST(test_getSuccessors3);
-    /*
     MU_RUN_TEST(test_value);
     MU_RUN_TEST(test_threeInARow);
     MU_RUN_TEST(test_heuristic);
+    /*
+    MU_RUN_TEST(test_heuristic2);
+    MU_RUN_TEST(test_heuristicGuaranteedWin);
     */
 }
 

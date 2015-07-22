@@ -190,7 +190,7 @@ AIMove maxValue(GameState gameState, int depth) {
             }
         }
     }
-    printf("MAX VALUE: %f, %i \n", aiMove.value, aiMove.move.column);
+    //printf("MAX VALUE: %f, %i \n", aiMove.value, aiMove.move.column);
     return aiMove;
 }
 
@@ -209,7 +209,7 @@ AIMove minValue(GameState gameState, int depth) {
             }
         }
     }
-    printf("MIN VALUE: %f, %i \n", aiMove.value, aiMove.move.column);
+    //printf("MIN VALUE: %f, %i \n", aiMove.value, aiMove.move.column);
     return aiMove;
 }
 
@@ -350,7 +350,7 @@ double heuristic(GameState gameState) {
 
 // Returns whether there is three in a row adjacent to the current position 
 // Takes symbol, the board, and the position (row and column)
-int threeInARow(char symbol, char board[6][7], int row, int column) {
+bool threeInARow(char symbol, char board[6][7], int row, int column) {
     // down
     if (row < 3) {
         if (board[row + 1][column] == symbol && board[row + 2][column] == symbol&& board[row + 3][column] == symbol) {
@@ -386,6 +386,20 @@ int threeInARow(char symbol, char board[6][7], int row, int column) {
         }
     }
 
+    // up-left
+    if (row > 2 && column >= 3) {
+        if (board[row - 1][column - 1] == symbol && board[row - 2][column - 2] == symbol && board[row - 3][column - 3] == symbol) {
+            return true;
+        }
+    }
+
+    // up-right
+    if (row > 2 && column <= 3) {
+        if (board[row - 1][column + 1] == symbol && board[row - 2][column + 2] == symbol && board[row - 3][column + 3] == symbol) {
+            return true;
+        }
+    }
+
     // around (XX-X)
     if (column >= 2) {
         if (board[row][column - 1] == symbol && board[row][column - 2] == symbol&& board[row][column + 1] == symbol) {
@@ -405,7 +419,7 @@ int threeInARow(char symbol, char board[6][7], int row, int column) {
 
 // Returns whether there is two in a row adjacent to the current position 
 // Takes symbol, the board, and the position (row and column)
-int twoInARow(char symbol, char board[6][7], int row, int column) {
+bool twoInARow(char symbol, char board[6][7], int row, int column) {
     // down
     if (row < 4) {
         if (board[row + 1][column] == symbol && board[row + 2][column] == symbol) {
@@ -437,6 +451,20 @@ int twoInARow(char symbol, char board[6][7], int row, int column) {
     // down-right
     if (row < 4 && column <= 4) {
         if (board[row + 1][column + 1] == symbol && board[row + 2][column + 2] == symbol) {
+            return true;
+        }
+    }
+
+    // up-left
+    if (row > 1 && column >= 2) {
+        if (board[row - 1][column - 1] == symbol && board[row - 2][column - 2] == symbol) {
+            return true;
+        }
+    }
+
+    // up-right
+    if (row > 1 && column <= 4) {
+        if (board[row - 1][column + 1] == symbol && board[row - 2][column + 2] == symbol) {
             return true;
         }
     }
