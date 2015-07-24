@@ -111,6 +111,10 @@ Move getAIMove() {
     return move;
 }
 
+AIMove getAIMoveOn(GameState gameState) {
+    return value(gameState, 6);
+}
+
 void getSuccessors(GameState successors[7], GameState newGameState) {
     int i;
     for (i = 0; i < 7; i++) {
@@ -191,6 +195,7 @@ AIMove maxValue(GameState gameState, int depth) {
         }
     }
     //printf("MAX VALUE: %f, %i \n", aiMove.value, aiMove.move.column);
+    aiMove.move.symbol = 'X';
     return aiMove;
 }
 
@@ -210,6 +215,7 @@ AIMove minValue(GameState gameState, int depth) {
         }
     }
     //printf("MIN VALUE: %f, %i \n", aiMove.value, aiMove.move.column);
+    aiMove.move.symbol = 'O';
     return aiMove;
 }
 
