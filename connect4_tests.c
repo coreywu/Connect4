@@ -549,10 +549,9 @@ MU_TEST(test_heuristic2) {
     heuristicGameState.board[5][4] = 'O';
     heuristicGameState.board[5][5] = 'O';
 
-    printBoard2(heuristicGameState.board);
-
-    printf("HEURISTIC: score: %f \n", heuristic(heuristicGameState));
-    //mu_check(heuristic(heuristicGameState) == 100);
+    // Score is 0.2 (agent3 = 2, opponent3 = 1, agent2 = 1, opponent2 = 1)
+    // net3 -> 0.2, net2 -> 0
+    mu_check(heuristic(heuristicGameState) == 0.2);
 }
 
 MU_TEST(test_heuristicGuaranteedWin) {
@@ -568,9 +567,8 @@ MU_TEST(test_heuristicGuaranteedWin) {
     heuristicGameState.columnHeight[4] = 4;
     heuristicGameState.columnHeight[5] = 4;
 
-    // printBoard2(heuristicGameState.board);
-    printf("HEURISTIC: score: %f \n", heuristic(heuristicGameState));
-    mu_check(heuristic(heuristicGameState) == 100);
+    // Score is 99.9 because it's a guaranteed win given the correct moves
+    mu_check(heuristic(heuristicGameState) == 99.9);
 }
 
 MU_TEST_SUITE(test_suite) {
@@ -587,10 +585,8 @@ MU_TEST_SUITE(test_suite) {
     MU_RUN_TEST(test_value);
     MU_RUN_TEST(test_threeInARow);
     MU_RUN_TEST(test_heuristic);
-    /*
     MU_RUN_TEST(test_heuristic2);
     MU_RUN_TEST(test_heuristicGuaranteedWin);
-    */
 }
 
 int main(int argc, char *argv[]) {
