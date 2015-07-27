@@ -59,7 +59,7 @@ bool boardEquals(char board1[6][7], char board2[6][7]) {
     return true;
 }
 
-bool columnHeightEquals(char columnHeight1[7], char columnHeight2[7]) {
+bool columnHeightEquals(int columnHeight1[7], int columnHeight2[7]) {
     int i;
     for (i = 0; i < 7; i++) {
         if (columnHeight1[i] != columnHeight2[i]) {

@@ -30,6 +30,9 @@ typedef struct {
     Move move;
 } AIMove;
 
+bool boardEquals(char[6][7], char[6][7]);
+bool columnHeightEquals(int[7], int[7]);
+
 Move getMove();
 Move getHumanMove();
 Move getAIMove();
