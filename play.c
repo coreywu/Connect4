@@ -40,17 +40,49 @@ int main(void) {
     printBoard2(gameState.board);
     */
 
-    printf("Turn: %i, symbol: %c \n", gameState.turn, getSymbol(gameState.turn));
-    performMoveOnExplicit(&gameState, 0, 'X');
+
+    performMoveOnExplicit(&gameState, 3, 'X');
     gameState.turn = !gameState.turn;
 
-    AIMove aiMove = getAIMoveOn(gameState);
-
+    printf("Turn: %i, symbol: %c \n", gameState.turn, getSymbol(gameState.turn));
     printBoard2(gameState.board);
 
-    printf("Turn: %i, symbol: %c \n", gameState.turn, getSymbol(gameState.turn));
+    printf("VALUE: %f \n", value(gameState, 6).value);
+
+    AIMove aiMove = getAIMoveOn(gameState);
     performMoveOn(&gameState, aiMove.move);
 
+    printf("Turn: %i, symbol: %c \n", gameState.turn, getSymbol(gameState.turn));
+    printBoard2(gameState.board);
+
+    printf("AIMOVE: value: %f, symbol: %c, column: %i \n", aiMove.value, aiMove.move.symbol, aiMove.move.column);
+
+    performMoveOnExplicit(&gameState, 2, 'X');
+
+    printf("Turn: %i, symbol: %c \n", gameState.turn, getSymbol(gameState.turn));
+    printBoard2(gameState.board);
+
+    printf("VALUE: %f \n", value(gameState, 6).value);
+
+    aiMove = getAIMoveOn(gameState);
+    performMoveOn(&gameState, aiMove.move);
+
+    printf("Turn: %i, symbol: %c \n", gameState.turn, getSymbol(gameState.turn));
+    printBoard2(gameState.board);
+
+    printf("AIMOVE: value: %f, symbol: %c, column: %i \n", aiMove.value, aiMove.move.symbol, aiMove.move.column);
+
+    performMoveOnExplicit(&gameState, 3, 'X');
+
+    printf("Turn: %i, symbol: %c \n", gameState.turn, getSymbol(gameState.turn));
+    printBoard2(gameState.board);
+
+    printf("VALUE: %f \n", value(gameState, 6).value);
+
+    aiMove = getAIMoveOn(gameState);
+    performMoveOn(&gameState, aiMove.move);
+
+    printf("Turn: %i, symbol: %c \n", gameState.turn, getSymbol(gameState.turn));
     printBoard2(gameState.board);
 
     printf("AIMOVE: value: %f, symbol: %c, column: %i \n", aiMove.value, aiMove.move.symbol, aiMove.move.column);
