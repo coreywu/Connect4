@@ -47,7 +47,7 @@ int main(void) {
     printf("Turn: %i, symbol: %c \n", gameState.turn, getSymbol(gameState.turn));
     printBoard2(gameState.board);
 
-    printf("VALUE: %f \n", value(gameState, 6).value);
+    printf("VALUE: %f \n", heuristic(gameState));
 
     AIMove aiMove = getAIMoveOn(gameState);
     performMoveOn(&gameState, aiMove.move);
@@ -55,14 +55,15 @@ int main(void) {
     printf("Turn: %i, symbol: %c \n", gameState.turn, getSymbol(gameState.turn));
     printBoard2(gameState.board);
 
-    printf("AIMOVE: value: %f, symbol: %c, column: %i \n", aiMove.value, aiMove.move.symbol, aiMove.move.column);
+    printf("VALUE: %f \n", heuristic(gameState));
+    //printf("AIMOVE: value: %f, symbol: %c, column: %i \n", aiMove.value, aiMove.move.symbol, aiMove.move.column);
 
     performMoveOnExplicit(&gameState, 2, 'X');
 
     printf("Turn: %i, symbol: %c \n", gameState.turn, getSymbol(gameState.turn));
     printBoard2(gameState.board);
 
-    printf("VALUE: %f \n", value(gameState, 6).value);
+    printf("VALUE: %f \n", heuristic(gameState));
 
     aiMove = getAIMoveOn(gameState);
     performMoveOn(&gameState, aiMove.move);
@@ -70,14 +71,15 @@ int main(void) {
     printf("Turn: %i, symbol: %c \n", gameState.turn, getSymbol(gameState.turn));
     printBoard2(gameState.board);
 
-    printf("AIMOVE: value: %f, symbol: %c, column: %i \n", aiMove.value, aiMove.move.symbol, aiMove.move.column);
+    printf("VALUE: %f \n", heuristic(gameState));
+    //printf("AIMOVE: value: %f, symbol: %c, column: %i \n", aiMove.value, aiMove.move.symbol, aiMove.move.column);
 
     performMoveOnExplicit(&gameState, 3, 'X');
 
     printf("Turn: %i, symbol: %c \n", gameState.turn, getSymbol(gameState.turn));
     printBoard2(gameState.board);
 
-    printf("VALUE: %f \n", value(gameState, 6).value);
+    printf("VALUE: %f \n", heuristic(gameState));
 
     aiMove = getAIMoveOn(gameState);
     performMoveOn(&gameState, aiMove.move);
@@ -85,7 +87,8 @@ int main(void) {
     printf("Turn: %i, symbol: %c \n", gameState.turn, getSymbol(gameState.turn));
     printBoard2(gameState.board);
 
-    printf("AIMOVE: value: %f, symbol: %c, column: %i \n", aiMove.value, aiMove.move.symbol, aiMove.move.column);
+    printf("VALUE: %f \n", heuristic(gameState));
+    //printf("AIMOVE: value: %f, symbol: %c, column: %i \n", aiMove.value, aiMove.move.symbol, aiMove.move.column);
 
     return 0;
 }

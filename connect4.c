@@ -429,57 +429,135 @@ bool threeInARow(char symbol, char board[6][7], int row, int column) {
 // four-in-a-row horizontally)
 bool twoInARow(char symbol, char board[6][7], int row, int column) {
     // down
+    // -
+    // - <- twoInARow position
+    // X
+    // X
     if (row < 4) {
-        if (board[row + 1][column] == symbol && board[row + 2][column] == symbol && board[row + 3][column] == ' ') {
+        if (board[row + 1][column] == symbol && board[row + 2][column] == symbol && board[row - 1][column] == ' ') {
             return true;
         }
     }
 
     // left
-    if (column >= 2) {
-        if (board[row][column - 1] == symbol && board[row][column - 2] == symbol && board[row][column - 3] == ' ') {
+    // -XX-
+    //    ^
+    // twoInARow position
+    if (column >= 3) {
+        if (board[row][column - 1] == symbol && board[row][column - 2] == symbol && (board[row][column + 1] == ' ')) {
+            return true;
+        }
+    // XX--
+    //   ^
+    // twoInARow position
+    } else if (column >= 2) {
+        if (board[row][column - 1] == symbol && board[row][column - 2] == symbol && (board[row][column - 3] == ' ')) {
             return true;
         }
     }
 
     // right
+    // -XX-
+    // ^
     if (column <= 4) {
         if (board[row][column + 1] == symbol && board[row][column + 2] == symbol && board[row][column + 3] == ' ') {
+            return true;
+        }
+    // --XX
+    //  ^
+    } else if (column <= 3) {
+        if (board[row][column + 1] == symbol && board[row][column + 2] == symbol && board[row][column - 3] == ' ') {
             return true;
         }
     }
 
     // down-left
-    if (row < 4 && column >= 2) {
+    //    - <-
+    //   X
+    //  X
+    // -
+    if (row < 3 && column >= 3) {
         if (board[row + 1][column - 1] == symbol && board[row + 2][column - 2] == symbol && board[row + 3][column - 3] == ' ') {
+            return true;
+        }
+    //    -
+    //   - <-
+    //  X
+    // X
+    } else if (row < 4 && column >= 2) {
+        if (board[row + 1][column - 1] == symbol && board[row + 2][column - 2] == symbol && board[row - 1][column + 1] == ' ') {
             return true;
         }
     }
 
     // down-right
-    if (row < 4 && column <= 4) {
+    // - <-
+    //  X
+    //   X
+    //    -
+    if (row < 3 && column <= 3) {
         if (board[row + 1][column + 1] == symbol && board[row + 2][column + 2] == symbol && board[row + 3][column + 3] == ' ') {
+            return true;
+        }
+    // -
+    //  - <-
+    //   X
+    //    X
+    } else if (row < 4 && column <= 4) {
+        if (board[row + 1][column + 1] == symbol && board[row + 2][column + 2] == symbol && board[row - 1][column - 1] == ' ') {
             return true;
         }
     }
 
     // up-left
-    if (row > 1 && column >= 2) {
+    // -
+    //  X
+    //   X
+    //    - <-
+    if (row > 2 && column >= 3) {
         if (board[row - 1][column - 1] == symbol && board[row - 2][column - 2] == symbol && board[row - 3][column - 3] == ' ') {
+            return true;
+        }
+    // X
+    //  X
+    //   - <-
+    //    -
+    } else if (row > 1 && column >= 2) {
+        if (board[row - 1][column - 1] == symbol && board[row - 2][column - 2] == symbol && board[row + 1][column + 1] == ' ') {
             return true;
         }
     }
 
     // up-right
-    if (row > 1 && column <= 4) {
+    //    -
+    //   X
+    //  X
+    // - <-
+    if (row > 2 && column <= 3) {
         if (board[row - 1][column + 1] == symbol && board[row - 2][column + 2] == symbol && board[row - 3][column + 3] == ' ') {
+            return true;
+        }
+    //    X
+    //   X
+    //  - <-
+    // -
+    } else if (row > 1 && column <= 4) {
+        if (board[row - 1][column + 1] == symbol && board[row - 2][column + 2] == symbol && board[row + 1][column - 1] == ' ') {
             return true;
         }
     }
 
     // around (X-X)
-    if (column <= 5 && column >= 1) {
-        if (board[row][column + 1] == symbol && board[row][column - 1] == symbol && (board[row][column + 2] == ' ' || board[row][column - 2] == ' ')) {
+    // X-X-
+    //  ^
+    if (column <= 4 && column >= 1) {
+        if (board[row][column + 1] == symbol && board[row][column - 1] == symbol && board[row][column + 2] == ' ') {
+            return true;
+        }
+    // -X-X
+    //   ^
+    } else if (column <= 5 && column >= 2) {
+        if (board[row][column + 1] == symbol && board[row][column - 1] == symbol && board[row][column - 2] == ' ') {
             return true;
         }
     }
