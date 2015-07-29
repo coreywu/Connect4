@@ -447,10 +447,11 @@ bool twoInARow(char symbol, char board[6][7], int row, int column) {
         if (board[row][column - 1] == symbol && board[row][column - 2] == symbol && (board[row][column + 1] == ' ')) {
             return true;
         }
+    }
     // XX--
     //   ^
     // twoInARow position
-    } else if (column >= 2) {
+    if (column >= 2) {
         if (board[row][column - 1] == symbol && board[row][column - 2] == symbol && (board[row][column - 3] == ' ')) {
             return true;
         }
@@ -463,9 +464,10 @@ bool twoInARow(char symbol, char board[6][7], int row, int column) {
         if (board[row][column + 1] == symbol && board[row][column + 2] == symbol && board[row][column + 3] == ' ') {
             return true;
         }
+    }
     // --XX
     //  ^
-    } else if (column <= 3) {
+    if (column <= 3) {
         if (board[row][column + 1] == symbol && board[row][column + 2] == symbol && board[row][column - 3] == ' ') {
             return true;
         }
@@ -480,11 +482,12 @@ bool twoInARow(char symbol, char board[6][7], int row, int column) {
         if (board[row + 1][column - 1] == symbol && board[row + 2][column - 2] == symbol && board[row + 3][column - 3] == ' ') {
             return true;
         }
+    } 
     //    -
     //   - <-
     //  X
     // X
-    } else if (row < 4 && column >= 2) {
+    if (row < 4 && column >= 2) {
         if (board[row + 1][column - 1] == symbol && board[row + 2][column - 2] == symbol && board[row - 1][column + 1] == ' ') {
             return true;
         }
@@ -499,11 +502,12 @@ bool twoInARow(char symbol, char board[6][7], int row, int column) {
         if (board[row + 1][column + 1] == symbol && board[row + 2][column + 2] == symbol && board[row + 3][column + 3] == ' ') {
             return true;
         }
+    }
     // -
     //  - <-
     //   X
     //    X
-    } else if (row < 4 && column <= 4) {
+    if (row < 4 && column <= 4) {
         if (board[row + 1][column + 1] == symbol && board[row + 2][column + 2] == symbol && board[row - 1][column - 1] == ' ') {
             return true;
         }
@@ -518,11 +522,12 @@ bool twoInARow(char symbol, char board[6][7], int row, int column) {
         if (board[row - 1][column - 1] == symbol && board[row - 2][column - 2] == symbol && board[row - 3][column - 3] == ' ') {
             return true;
         }
+    }
     // X
     //  X
     //   - <-
     //    -
-    } else if (row > 1 && column >= 2) {
+    if (row > 1 && column >= 2) {
         if (board[row - 1][column - 1] == symbol && board[row - 2][column - 2] == symbol && board[row + 1][column + 1] == ' ') {
             return true;
         }
@@ -537,11 +542,12 @@ bool twoInARow(char symbol, char board[6][7], int row, int column) {
         if (board[row - 1][column + 1] == symbol && board[row - 2][column + 2] == symbol && board[row - 3][column + 3] == ' ') {
             return true;
         }
+    }
     //    X
     //   X
     //  - <-
     // -
-    } else if (row > 1 && column <= 4) {
+    if (row > 1 && column <= 4) {
         if (board[row - 1][column + 1] == symbol && board[row - 2][column + 2] == symbol && board[row + 1][column - 1] == ' ') {
             return true;
         }
@@ -554,9 +560,10 @@ bool twoInARow(char symbol, char board[6][7], int row, int column) {
         if (board[row][column + 1] == symbol && board[row][column - 1] == symbol && board[row][column + 2] == ' ') {
             return true;
         }
+    }
     // -X-X
     //   ^
-    } else if (column <= 5 && column >= 2) {
+    if (column <= 5 && column >= 2) {
         if (board[row][column + 1] == symbol && board[row][column - 1] == symbol && board[row][column - 2] == ' ') {
             return true;
         }
