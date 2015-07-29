@@ -3,7 +3,7 @@
 int main(void) {
     int i, j;
 
-    //playGame();
+    playGame();
 
     // Testing
 
@@ -41,6 +41,8 @@ int main(void) {
     */
 
 
+    /*
+    // Turn 1
     performMoveOnExplicit(&gameState, 3, 'X');
     gameState.turn = !gameState.turn;
 
@@ -56,8 +58,9 @@ int main(void) {
     printBoard2(gameState.board);
 
     printf("VALUE: %f \n", heuristic(gameState));
-    //printf("AIMOVE: value: %f, symbol: %c, column: %i \n", aiMove.value, aiMove.move.symbol, aiMove.move.column);
+    printf("AIMOVE: value: %f, symbol: %c, column: %i \n", aiMove.value, aiMove.move.symbol, aiMove.move.column);
 
+    // Turn 2
     performMoveOnExplicit(&gameState, 2, 'X');
 
     printf("Turn: %i, symbol: %c \n", gameState.turn, getSymbol(gameState.turn));
@@ -74,6 +77,7 @@ int main(void) {
     printf("VALUE: %f \n", heuristic(gameState));
     //printf("AIMOVE: value: %f, symbol: %c, column: %i \n", aiMove.value, aiMove.move.symbol, aiMove.move.column);
 
+    // Turn 3
     performMoveOnExplicit(&gameState, 3, 'X');
 
     printf("Turn: %i, symbol: %c \n", gameState.turn, getSymbol(gameState.turn));
@@ -89,6 +93,24 @@ int main(void) {
 
     printf("VALUE: %f \n", heuristic(gameState));
     //printf("AIMOVE: value: %f, symbol: %c, column: %i \n", aiMove.value, aiMove.move.symbol, aiMove.move.column);
+
+    // Turn 4
+    performMoveOnExplicit(&gameState, 1, 'X');
+
+    printf("Turn: %i, symbol: %c \n", gameState.turn, getSymbol(gameState.turn));
+    printBoard2(gameState.board);
+
+    printf("VALUE: %f \n", heuristic(gameState));
+
+    aiMove = getAIMoveOn(gameState);
+    performMoveOn(&gameState, aiMove.move);
+
+    printf("Turn: %i, symbol: %c \n", gameState.turn, getSymbol(gameState.turn));
+    printBoard2(gameState.board);
+
+    printf("VALUE: %f \n", heuristic(gameState));
+    //printf("AIMOVE: value: %f, symbol: %c, column: %i \n", aiMove.value, aiMove.move.symbol, aiMove.move.column);
+    */
 
     return 0;
 }

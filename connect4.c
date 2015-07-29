@@ -22,6 +22,7 @@ void playGame() {
         printf("Move: %c -> %i \n", move.symbol, move.column);
         winner = checkWinner(gameState.board);
         if (winner != '?') {
+            printBoard(gameState);
             end = true;
             if (winner != '-') {
                 printf("\n Winner: %c \n", winner); 
@@ -105,10 +106,14 @@ Move getHumanMove() {
 }
 
 Move getAIMove() {
-    // TODO
+    AIMove aiMove = value(gameState, 6);
+    printf("gamestate turn: %i value: %f \n", gameState.turn, aiMove.value);
+    return aiMove.move;
+    /*
     int randNum = rand() % 7;
     Move move = {'O', randNum};
     return move;
+    */
 }
 
 AIMove getAIMoveOn(GameState gameState) {
@@ -125,6 +130,7 @@ void getSuccessors(GameState successors[7], GameState newGameState) {
             Move move = {getSymbol(successors[i].turn), i};
             performMoveOn(&successors[i], move);
             successors[i].turn = !successors[i].turn;
+	        successors[i].valid = true;
         }
     }
 }
