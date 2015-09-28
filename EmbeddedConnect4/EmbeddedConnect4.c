@@ -72,6 +72,7 @@
 #include "Nokia5110.h"
 #include "Random.h"
 #include "TExaS.h"
+#include "ADC.h"
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
@@ -392,6 +393,11 @@ const unsigned char Connect4_Select[] ={
 
 
 int main(void){
+	unsigned long ADCdata;
+	unsigned int newDistance, oldDistance;
+	char outString[1];
+	
+	ADC0_Init();
   TExaS_Init(SSI0_Real_Nokia5110_Scope);  // set system clock to 80 MHz
   Random_Init(1);
   Nokia5110_Init();
@@ -412,11 +418,10 @@ int main(void){
 	
   Nokia5110_DisplayBuffer();     // draw buffer
 
-  Delay100ms(50);              // delay 5 sec at 50 MHz
-
-
+  Delay100ms(10);              // delay 5 sec at 50 MHz
   Nokia5110_Clear();
-  Nokia5110_SetCursor(1, 1);
+  /*
+	Nokia5110_SetCursor(1, 1);
   Nokia5110_OutString("GAME OVER");
   Nokia5110_SetCursor(1, 2);
   Nokia5110_OutString("Nice try,");
@@ -424,8 +429,35 @@ int main(void){
   Nokia5110_OutString("Earthling!");
   Nokia5110_SetCursor(2, 4);
   Nokia5110_OutUDec(1234);
-  while(1){
+  */
+	
+	while(1){
+		ADCdata = ADC0_In();
+		if (ADCdata > 6 * 4096/7) {
+			newDistance = 6;
+		} else if (ADCdata > 5 * 4096/7) {
+			newDistance = 5;
+		} else if (ADCdata > 4 * 4096/7) {
+			newDistance = 4;
+		} else if (ADCdata > 3 * 4096/7) {
+			newDistance = 3;
+		} else if (ADCdata > 2 * 4096/7) {
+			newDistance = 2;
+		} else if (ADCdata > 4096/7) {
+			newDistance = 1;
+		} else {
+			newDistance = 0;
+		}
+		if (oldDistance != newDistance) {
+			Nokia5110_Clear();
+			Nokia5110_SetCursor(1, 1);
+			
+			outString[0] = newDistance + 48;
+			Nokia5110_OutString(outString);
+		}
+		oldDistance = newDistance;
   }
+	
 }
 
 void drawBoard() {
